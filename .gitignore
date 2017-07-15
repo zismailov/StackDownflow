@@ -16,4 +16,13 @@
 /node_modules
 /yarn-error.log
 
+# On mac
+.DS_Store
+
+# Uploads
+/public/uploads
+
+/.env
+/.env.production
+
 .byebug_history
