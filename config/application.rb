@@ -21,19 +21,19 @@ module StackDownflow
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 5.1
 
-    config.time_zone = 'UTC'
+    config.time_zone = "UTC"
     config.active_record.default_timezone = :utc
     config.sass.preferred_syntax = :sass
 
     config.generators do |g|
       g.template_engine :slim
       g.test_framework :rspec,
-        view_specs:    false,
-        request_specs: false,
-        routing_specs: false,
-        helper_specs:  false
+                       view_specs:    false,
+                       request_specs: false,
+                       routing_specs: false,
+                       helper_specs:  false
     end
-    
+
     # Don't generate system test files.
     config.generators.system_tests = nil
   end

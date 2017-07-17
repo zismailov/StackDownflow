@@ -1,11 +1,11 @@
 FactoryGirl.define do
   factory :question do
-    title 'Title'
+    title "Title"
     body { Faker::Lorem.paragraph }
-  end
 
-  factory :invalid_question, class: "Question" do
-    title ''
-    body ''
+    factory :invalid_question do
+      title ""
+      body ""
+    end
   end
 end
