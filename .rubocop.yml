@@ -13,6 +13,10 @@ Style/StringLiterals:
   EnforcedStyle: double_quotes
   ConsistentQuotesInMultiline: true
 
+Style/BlockDelimiters:
+  Exclude:
+    - 'spec/**/*'
+
 Metrics/LineLength:
   Max: 120
 

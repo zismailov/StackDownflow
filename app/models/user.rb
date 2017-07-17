@@ -11,6 +11,5 @@ class User < ApplicationRecord
                        uniqueness: { case_sensitive: false },
                        length: { in: 3..16 },
                        format: { with: /\A[\w\d_]+\z/,
-                       message: "allows only latin letters, numbers, and underscore." }
-
+                                 message: "allows only latin letters, numbers, and underscore." }
 end

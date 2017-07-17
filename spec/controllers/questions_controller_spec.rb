@@ -24,23 +24,40 @@ RSpec.describe QuestionsController, type: :controller do
   end
 
   describe "#create" do
+    let(:user) { create(:user) }
+
+    before do
+      allow(controller).to receive(:user_signed_in?) { true }
+      allow(controller).to receive(:current_user) { user }
+    end
+
     context "with valid data" do
-      let(:question) { create(:question) }
+      let(:question) { create(:question, user: user) }
 
       it "creates a new question" do
-        expect do
+        expect {
           post :create, params: { question: attributes_for(:question) }
-        end.to change(Question, :count).by(1)
+        }.to change(Question, :count).by(1)
+      end
+
+      it "increases current user's questions count" do
+        expect {
+          post :create, params: { question: attributes_for(:question) }
+        }.to change(user.questions, :count).by(1)
       end
     end
 
     context "with invalid data" do
-      let(:invalid_question) { create(:invalid_question) }
-
       it "doesn't create a new question" do
-        expect do
-          post :create, params: { question: attributes_for(:invalid_question) }
-        end.not_to change(Question, :count)
+        expect {
+          post :create, params: { question: attributes_for(:invalid_question, user: user) }
+        }.not_to change(Question, :count)
+      end
+
+      it "doesn't increase current user's questions count" do
+        expect {
+          post :create, params: { question: attributes_for(:invalid_question, user: user) }
+        }.not_to change(user.questions, :count)
       end
     end
   end
