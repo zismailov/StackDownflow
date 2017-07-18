@@ -140,4 +140,47 @@ RSpec.describe AnswersController, type: :controller do
       end
     end
   end
+
+  describe "#destroy" do
+    let(:user) { create(:user) }
+    let(:question) { create(:question, user: user) }
+    let(:answer) { create(:answer, user: user, question: question) }
+
+    context "as an authenticated user" do
+      before do
+        allow(controller).to receive(:user_signed_in?) { true }
+        allow(controller).to receive(:current_user) { user }
+        answer
+      end
+
+      it "deletes an answer" do
+        expect {
+          delete :destroy, params: { question_id: question, id: answer }
+        }.to change(Answer, :count).by(-1)
+      end
+
+      it "redirects to root path" do
+        delete :destroy, params: { question_id: question, id: answer.id }
+        expect(response).to redirect_to root_path
+      end
+    end
+
+    context "as an guest user" do
+      before do
+        allow(controller).to receive(:user_signed_in?) { false }
+        answer
+      end
+
+      it "doesn't delete a answer" do
+        expect {
+          delete :destroy, params: { question_id: question, id: answer }
+        }.not_to change(Answer, :count)
+      end
+
+      it "redirects to root path" do
+        delete :destroy, params: { question_id: question, id: answer.id }
+        expect(response).to redirect_to root_path
+      end
+    end
+  end
 end
