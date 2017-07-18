@@ -1,0 +1,22 @@
+@import "bootstrap-sprockets";
+@import "bootstrap";
+
+.edit-question {
+  font-size: 16px;
+  font-weight: normal;
+  display: inline-block;
+  margin: 0 0 0 20px;
+}
+
+.answer {
+  position: relative;
+}
+
+.edit-answer {
+  display: inline-block;
+  padding: 3px;
+  background: #fff;
+  position: absolute;
+  right: 0;
+  top: 0;
+}

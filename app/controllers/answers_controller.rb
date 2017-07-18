@@ -26,7 +26,7 @@ class AnswersController < ApplicationController
   def update
     if @answer.update(answer_params)
       flash[:success] = "Answer is updated!"
-      redirect_to question_answer_path(@answer.question.id, @answer.id)
+      redirect_to question_path(@answer.question.id)
     else
       render :edit
     end
