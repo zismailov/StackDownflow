@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
   devise_for :users
 
-  resources :questions, only: %i[index new create show] do
+  resources :questions, except: [:destroy] do
     resources :answers, only: [:create]
   end
 

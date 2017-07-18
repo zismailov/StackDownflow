@@ -13,12 +13,16 @@ Style/StringLiterals:
   EnforcedStyle: double_quotes
   ConsistentQuotesInMultiline: true
 
-Style/BlockDelimiters:
-  Exclude:
-    - 'spec/**/*'
+Style/SymbolArray:
+  Enabled: true
+  EnforcedStyle: brackets
 
 Metrics/LineLength:
   Max: 120
+
+Style/BlockDelimiters:
+  Exclude:
+    - 'spec/**/*'
 
 Metrics/ModuleLength:
   Exclude:
