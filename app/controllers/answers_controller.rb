@@ -1,5 +1,6 @@
 class AnswersController < ApplicationController
-  before_action :must_be_logged_in, only: [:create]
+  before_action :must_be_logged_in, only: [:create, :edit, :update]
+  before_action :set_answer, only: [:edit, :update]
 
   def create
     @question = Question.find(params[:question_id])
@@ -20,7 +21,22 @@ class AnswersController < ApplicationController
     render "questions#show"
   end
 
+  def edit; end
+
+  def update
+    if @answer.update(answer_params)
+      flash[:success] = "Answer is updated!"
+      redirect_to question_answer_path(@answer.question.id, @answer.id)
+    else
+      render :edit
+    end
+  end
+
   private
+
+  def set_answer
+    @answer = Answer.find(params[:id])
+  end
 
   def answer_params
     params.require(:answer).permit(:body)

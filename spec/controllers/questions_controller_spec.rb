@@ -62,7 +62,7 @@ RSpec.describe QuestionsController, type: :controller do
     end
   end
 
-  describe "PUT #update" do
+  describe "#update" do
     let(:user) { create(:user) }
     let(:question) { create(:question, user: user) }
     let(:edited_question) do
