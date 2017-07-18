@@ -5,5 +5,7 @@ rvm: 2.4.1
 install:
   - bundle install --retry=3
 script:
-  - bundle exec rake
+  - export RAILS_ENV=test
+  - bundle exec rake db:create db:schema:load db:test:prepare
+  - bundle exec rspec --color --format documentation --require spec_helper --require rails_helper
   - bundle exec rubocop
