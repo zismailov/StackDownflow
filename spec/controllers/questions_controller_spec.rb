@@ -62,37 +62,6 @@ RSpec.describe QuestionsController, type: :controller do
     end
   end
 
-  describe "GET #edit" do
-    let(:user) { create(:user) }
-    let(:question) { create(:question, user: user) }
-
-    context "as a guest" do
-      before do
-        allow(controller).to receive(:user_signed_in?) { false }
-        allow(controller).to receive(:current_user) { user }
-        get :edit, params: { id: question.id }
-      end
-
-      it "redirects to root path" do
-        expect(response).to redirect_to root_path
-      end
-    end
-
-    before do
-      allow(controller).to receive(:user_signed_in?) { true }
-      allow(controller).to receive(:current_user) { user }
-      get :edit, params: { id: question.id }
-    end
-
-    context "user edits not his question" do
-      let(:another_question) { create(:question) }
-      before { get :edit, params: { id: another_question.id } }
-      it "redirect to the questions' page" do
-        expect(response).to redirect_to another_question
-      end
-    end
-  end
-
   describe "PUT #update" do
     let(:user) { create(:user) }
     let(:question) { create(:question, user: user) }
