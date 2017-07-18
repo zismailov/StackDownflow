@@ -25,129 +25,130 @@ RSpec.describe QuestionsController, type: :controller do
 
   describe "#create" do
     let(:user) { create(:user) }
+    let(:question) { create(:question) }
 
-    before do
-      allow(controller).to receive(:user_signed_in?) { true }
-      allow(controller).to receive(:current_user) { user }
+    context "as an authenticated user" do
+      context "with valid data" do
+        it "adds a questions" do
+          question_params = FactoryGirl.attributes_for(:question)
+          sign_in user
+          expect {
+            post :create, params: { question: question_params }
+          }.to change(user.questions, :count).by(1)
+        end
+      end
+
+      context "with invalid data" do
+        it "does not add a questions" do
+          question_params = FactoryGirl.attributes_for(:invalid_question)
+          sign_in user
+          expect {
+            post :create, params: { question: question_params }
+          }.to_not change(user.questions, :count)
+        end
+      end
     end
 
-    context "with valid data" do
-      let(:question) { create(:question, user: user) }
-
-      it "creates a new question" do
-        expect {
-          post :create, params: { question: attributes_for(:question) }
-        }.to change(Question, :count).by(1)
+    context "as a guest" do
+      it "returns a 302 response" do
+        question_params = FactoryGirl.attributes_for(:question)
+        post :create, params: { question: question_params }
+        expect(response).to have_http_status "302"
       end
 
-      it "increases current user's questions count" do
-        expect {
-          post :create, params: { question: attributes_for(:question) }
-        }.to change(user.questions, :count).by(1)
-      end
-    end
-
-    context "with invalid data" do
-      it "doesn't create a new question" do
-        expect {
-          post :create, params: { question: attributes_for(:invalid_question, user: user) }
-        }.not_to change(Question, :count)
-      end
-
-      it "doesn't increase current user's questions count" do
-        expect {
-          post :create, params: { question: attributes_for(:invalid_question, user: user) }
-        }.not_to change(user.questions, :count)
+      it "redirects to the sign-in page" do
+        question_params = FactoryGirl.attributes_for(:question)
+        post :create, params: { question: question_params }
+        expect(response).to redirect_to "/users/sign_in"
       end
     end
   end
 
   describe "#update" do
     let(:user) { create(:user) }
-    let(:question) { create(:question, user: user) }
-    let(:edited_question) do
-      edited_question = question.dup
-      edited_question.title = "Edited title"
-      edited_question
-    end
+    let(:other_user) { create(:user) }
+    let(:question) { create(:question) }
+    let(:other_question) { create(:question, title: "Same New Question", user: other_user) }
 
     context "as an authorized user" do
-      before do
-        allow(controller).to receive(:user_signed_in?) { true }
-        allow(controller).to receive(:current_user) { user }
-        put :update, params: {
-          id: question.id,
-          question: { title: edited_question.title, body: edited_question.body }
-        }
-      end
-
-      it "updates a question" do
-        expect(question.reload.title).to eq "Edited title"
-      end
-
       it "changes question's attribute" do
-        expect(Question.find(question.id).title).to eq edited_question.title
+        question_params = FactoryGirl.attributes_for(:question, title: "New Question")
+        sign_in user
+        patch :update, params: { id: question.id, question: question_params }
+        expect(question.reload.title).to eq "New Question"
       end
+    end
 
-      it "redirects to the question page" do
-        expect(response).to redirect_to question
+    context "as an unauthorized user" do
+      it "does not update the attribute" do
+        question_params = FactoryGirl.attributes_for(:question, title: "New Question")
+        sign_in user
+        patch :update, params: { id: question.id, question: question_params }
+        expect(other_question.reload.title).to eq "Same New Question"
       end
     end
 
     context "as a guest" do
-      before do
-        allow(controller).to receive(:user_signed_in?) { false }
-        allow(controller).to receive(:current_user) { user }
-        put :update, params: {
-          id: question.id,
-          question: { title: edited_question.title, body: edited_question.body }
-        }
+      it "returns a 302 response" do
+        question_params = FactoryGirl.attributes_for(:question)
+        patch :update, params: { id: question.id, question: question_params }
+        expect(response).to have_http_status "302"
       end
 
-      it "returns a 302 response" do
-        expect(response).to have_http_status "302"
+      it "redirects to the sign-in page" do
+        question_params = FactoryGirl.attributes_for(:question)
+        patch :update, params: { id: question.id, question: question_params }
+        expect(response).to redirect_to "/users/sign_in"
       end
     end
   end
 
   describe "#destroy" do
-    let(:user) { create(:user) }
-    let(:question) { create(:question, user: user) }
+    let!(:user) { create(:user) }
+    let!(:question) { create(:question, user: user) }
+
+    let(:other_user) { create(:user) }
+    let(:other_question) { create(:question, user: other_user) }
 
     context "as an authorized user" do
-      before do
-        allow(controller).to receive(:user_signed_in?) { true }
-        allow(controller).to receive(:current_user) { user }
-        question
-      end
-
       it "deletes a question" do
+        sign_in user
         expect {
-          delete :destroy, params: { id: question }
-        }.to change(Question, :count).by(-1)
+          delete :destroy, params: { id: question.id }
+        }.to change(user.questions, :count).by(-1)
+      end
+    end
+
+    context "as an unauthorized user" do
+      it "does not delete the question" do
+        sign_in user
+        expect {
+          delete :destroy, params: { id: other_question.id }
+        }.to_not change(Question, :count)
       end
 
-      it "redirects to root path" do
-        delete :destroy, params: { id: question.id }
+      it "redirects to the dashboard" do
+        sign_in user
+        delete :destroy, params: { id: other_question.id }
         expect(response).to redirect_to root_path
       end
     end
 
-    context "as an guest user" do
-      before do
-        allow(controller).to receive(:user_signed_in?) { false }
-        question
+    context "as a guest" do
+      it "returns a 302 response" do
+        delete :destroy, params: { id: question.id }
+        expect(response).to have_http_status "302"
       end
 
-      it "doesn't delete a question" do
+      it "redirects to the sign-in page" do
+        delete :destroy, params: { id: question.id }
+        expect(response).to redirect_to "/users/sign_in"
+      end
+
+      it "does not delete the question" do
         expect {
           delete :destroy, params: { id: question.id }
-        }.not_to change(Question, :count)
-      end
-
-      it "redirects to root path" do
-        delete :destroy, params: { id: question.id }
-        expect(response).to redirect_to root_path
+        }.to_not change(Question, :count)
       end
     end
   end

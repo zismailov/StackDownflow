@@ -1,5 +1,6 @@
 class QuestionsController < ApplicationController
-  before_action :must_be_logged_in, except: [:index, :show]
+  before_action :authenticate_user!, except: [:index, :show]
+  before_action :find_question_for_current_user, only: [:edit, :update, :destroy]
 
   def index
     @questions = Question.all.order("created_at DESC")
@@ -26,14 +27,9 @@ class QuestionsController < ApplicationController
     end
   end
 
-  def edit
-    @question = current_user.questions.find(params[:id])
-    redirect_to question_path(params[:id]) if @question.nil?
-  end
+  def edit; end
 
   def update
-    @question = current_user.questions.find(params[:id])
-
     if @question.update(question_params)
       flash[:success] = "Question updated!"
       redirect_to @question
@@ -43,13 +39,16 @@ class QuestionsController < ApplicationController
   end
 
   def destroy
-    @question = current_user.questions.find(params[:id])
     @question.destroy
     flash[:success] = "Question is deleted!"
     redirect_to root_path
   end
 
   private
+
+  def find_question_for_current_user
+    @question = Question.find(params[:id])
+  end
 
   def question_params
     params.require(:question).permit(:title, :body)
