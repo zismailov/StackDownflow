@@ -1,9 +1,9 @@
 class AnswersController < ApplicationController
   before_action :must_be_logged_in, except: [:show]
   before_action :set_answer, only: [:edit, :update, :mark_best]
+  before_action :set_question, only: [:create, :show]
 
   def create
-    @question = Question.find(params[:question_id])
     @answer = @question.answers.new(answer_params)
     @answer.user = current_user
     if @answer.save
@@ -15,7 +15,6 @@ class AnswersController < ApplicationController
   end
 
   def show
-    @question = Question.find(params[:question_id])
     @answers = @question.answers
     @answer = Answer.new
     render "questions#show"
@@ -49,6 +48,10 @@ class AnswersController < ApplicationController
 
   def set_answer
     @answer = Answer.find(params[:id])
+  end
+
+  def set_question
+    @question = Question.find(params[:question_id])
   end
 
   def answer_params
