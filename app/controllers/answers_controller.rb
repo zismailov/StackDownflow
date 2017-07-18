@@ -1,6 +1,6 @@
 class AnswersController < ApplicationController
   before_action :must_be_logged_in, except: [:show]
-  before_action :set_answer, only: [:edit, :update]
+  before_action :set_answer, only: [:edit, :update, :mark_best]
 
   def create
     @question = Question.find(params[:question_id])
@@ -39,6 +39,12 @@ class AnswersController < ApplicationController
     redirect_to root_path
   end
 
+  def mark_best
+    @answer.mark_best!
+    flash[:success] = "Answer marked as best!"
+    redirect_to @answer.question
+  end
+
   private
 
   def set_answer
@@ -51,7 +57,7 @@ class AnswersController < ApplicationController
 
   def must_be_logged_in
     return if user_signed_in?
-    flash[:danger] = "You must be logged in to post an answer."
+    flash[:danger] = "You must be logged in."
     redirect_to root_path
   end
 end
