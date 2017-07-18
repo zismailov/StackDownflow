@@ -1,24 +1,38 @@
 @import "bootstrap-sprockets";
 @import "bootstrap";
 
-.edit-question {
-  font-size: 16px;
-  font-weight: normal;
-  display: inline-block;
-  margin: 0 0 0 20px;
-}
-
 .answer {
   position: relative;
 }
 
-.edit-answer {
+.delete-answer, .edit-answer {
+  color: #d6e9c6;
   display: inline-block;
   padding: 3px;
   background: #fff;
   position: absolute;
   right: 0;
   top: 0;
+}
+
+.delete-answer {
+  color: #ebccd1;
+  right: 20px;
+}
+
+.edit-answer:hover {
+  color: #3c763d;
+}
+
+.delete-answer:hover {
+  color: #a94442;
+}
+
+.edit-question {
+  font-size: 16px;
+  font-weight: normal;
+  display: inline-block;
+  margin: 0 0 0 20px;
 }
 
 .delete-question, .edit-question {
