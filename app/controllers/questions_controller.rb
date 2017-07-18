@@ -1,5 +1,5 @@
 class QuestionsController < ApplicationController
-  before_action :must_be_logged_in, except: [ :index, :show ]
+  before_action :must_be_logged_in, except: [:index, :show]
 
   def index
     @questions = Question.all.order("created_at DESC")

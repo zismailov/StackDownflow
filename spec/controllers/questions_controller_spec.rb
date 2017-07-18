@@ -110,45 +110,45 @@ RSpec.describe QuestionsController, type: :controller do
     end
   end
 
-	describe "#destroy" do
-		let(:user) { create(:user) }
-		let(:question) { create(:question, user: user) }
+  describe "#destroy" do
+    let(:user) { create(:user) }
+    let(:question) { create(:question, user: user) }
 
-		context "as an authorized user" do
-			before do
-				allow(controller).to receive(:user_signed_in?) { true }
-				allow(controller).to receive(:current_user) { user }
-				question
-			end
+    context "as an authorized user" do
+      before do
+        allow(controller).to receive(:user_signed_in?) { true }
+        allow(controller).to receive(:current_user) { user }
+        question
+      end
 
-			it "deletes a question" do
-				expect{
+      it "deletes a question" do
+        expect {
           delete :destroy, params: { id: question }
         }.to change(Question, :count).by(-1)
-			end
+      end
 
-			it "redirects to root path" do
-				delete :destroy, params: { id: question.id }
-				expect(response).to redirect_to root_path
-			end
-		end
+      it "redirects to root path" do
+        delete :destroy, params: { id: question.id }
+        expect(response).to redirect_to root_path
+      end
+    end
 
-		context "as an guest user" do
-			before do
-				allow(controller).to receive(:user_signed_in?) { false }
-				question
-			end
+    context "as an guest user" do
+      before do
+        allow(controller).to receive(:user_signed_in?) { false }
+        question
+      end
 
-			it "doesn't delete a question" do
-				expect{
+      it "doesn't delete a question" do
+        expect {
           delete :destroy, params: { id: question.id }
         }.not_to change(Question, :count)
-			end
+      end
 
-			it "redirects to root path" do
-				delete :destroy, params: { id: question.id }
-				expect(response).to redirect_to root_path
-			end
-		end
-	end
+      it "redirects to root path" do
+        delete :destroy, params: { id: question.id }
+        expect(response).to redirect_to root_path
+      end
+    end
+  end
 end
