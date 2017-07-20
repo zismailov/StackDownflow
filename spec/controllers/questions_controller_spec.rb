@@ -67,7 +67,7 @@ RSpec.describe QuestionsController, type: :controller do
   describe "#update" do
     let(:user) { create(:user) }
     let(:other_user) { create(:user) }
-    let(:question) { create(:question) }
+    let(:question) { create(:question, user: user) }
     let(:other_question) { create(:question, title: "Same New Question", user: other_user) }
 
     context "as an authorized user" do
@@ -107,8 +107,8 @@ RSpec.describe QuestionsController, type: :controller do
     let!(:user) { create(:user) }
     let!(:question) { create(:question, user: user) }
 
-    let(:other_user) { create(:user) }
-    let(:other_question) { create(:question, user: other_user) }
+    let!(:other_user) { create(:user) }
+    let!(:other_question) { create(:question, user: other_user) }
 
     context "as an authorized user" do
       it "deletes a question" do

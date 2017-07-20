@@ -11,11 +11,12 @@ RSpec.feature "Answer a Question", type: :feature do
   let!(:answerer) { create(:user) }
   let!(:answer) { build(:answer, question: question, user: answerer) }
 
-  scenario "Authenticated user answers another user's question" do
+  background do
     sign_in answerer
-
     visit question_path(question)
-    # save_and_open_page
+  end
+
+  scenario "Authenticated user answers another user's question" do
     fill_in :answer_body, with: answer.body
     click_on "Answer"
 
@@ -24,8 +25,6 @@ RSpec.feature "Answer a Question", type: :feature do
   end
 
   scenario "Authenticated user answers another user's question without filling a required field" do
-    sign_in answerer
-    visit question_path(question)
     click_on "Answer"
 
     expect(page).to have_selector ".alert-danger"

@@ -1,6 +1,7 @@
 class QuestionsController < ApplicationController
   before_action :authenticate_user!, except: [:index, :show]
-  before_action :find_question_for_current_user, only: [:edit, :update, :destroy]
+  before_action :set_question, only: [:show, :edit, :update, :destroy]
+  before_action :question_belongs_to_current_user?, only: [:edit, :update, :destroy]
 
   def index
     @questions = Question.all.order("created_at DESC")
@@ -11,7 +12,6 @@ class QuestionsController < ApplicationController
   end
 
   def show
-    @question = Question.find(params[:id])
     @answers = @question.answers.order("best DESC, created_at")
     @answer = Answer.new
   end
@@ -46,17 +46,15 @@ class QuestionsController < ApplicationController
 
   private
 
-  def find_question_for_current_user
-    @question = Question.find(params[:id])
-  end
-
   def question_params
     params.require(:question).permit(:title, :body)
   end
 
-  def must_be_logged_in
-    return if user_signed_in?
-    flash[:danger] = "You need to log in to ask questions."
-    redirect_to root_path
+  def set_question
+    @question = Question.find(params[:id])
+  end
+
+  def question_belongs_to_current_user?
+    redirect_to root_path unless @question.user == current_user
   end
 end

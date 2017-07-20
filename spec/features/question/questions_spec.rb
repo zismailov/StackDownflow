@@ -6,14 +6,15 @@ require "rails_helper"
 #	 I want to have an ability to ask, edit, and delete questions
 
 RSpec.feature "Question", type: :feature do
-  let!(:user) { create(:user) }
-  let!(:question) { build(:question) }
+  let(:user) { create(:user) }
+  let(:question) { build(:question) }
+
+  background do
+    sign_in user
+    visit new_question_path
+  end
 
   scenario "Authenticated user asks a question" do
-    sign_in user
-
-    visit new_question_path
-
     fill_in "Title", with: question.title
     fill_in "Body", with: question.body
     click_on "Ask"
@@ -23,9 +24,6 @@ RSpec.feature "Question", type: :feature do
   end
 
   scenario "Authenticated user asks a question without filling required fields" do
-    sign_in user
-
-    visit new_question_path
     click_on "Ask"
 
     expect(page).to have_content "error"
