@@ -1,11 +1,11 @@
 require "rails_helper"
 
-# Feature: 'Questions' page
-#	 In order to resolve a problem
-#	 As a registered and authenticated user
-#	 I want to have an ability to ask, edit, and delete questions
+RSpec.feature "Question", "
+    In order to resolve a problem
+    As a registered and authenticated user
+    I want to have an ability to ask, edit, and delete questions
+  ", type: :feature do
 
-RSpec.feature "Question", type: :feature do
   let(:user) { create(:user) }
   let(:question) { build(:question) }
 

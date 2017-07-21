@@ -1,5 +1,4 @@
 module FeatureHelpers
-
   # rubocop:disable MethodLength
   def sign_in(*args)
     if args.size == 2
@@ -24,5 +23,4 @@ module FeatureHelpers
     fill_in "Password confirmation", with: password
     click_button "Sign up"
   end
-
 end

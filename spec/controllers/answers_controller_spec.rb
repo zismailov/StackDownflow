@@ -147,17 +147,36 @@ RSpec.describe AnswersController, type: :controller do
       context "when question belongs to current user" do
         let(:question) { create(:question, user: user) }
         let(:answer) { create(:answer, question: question, user: user2) }
-        before do
-          sign_in user
-          mark_best
+
+        context "when question has no best answers" do
+          before do
+            sign_in user
+            mark_best
+          end
+
+          it "marks the answer as best" do
+            expect(answer.reload).to be_best
+          end
+
+          it "redirects to question page" do
+            expect(response).to redirect_to question
+          end
         end
 
-        it "marks the answer as best" do
-          expect(answer.reload).to be_best
-        end
+        context "when question already has a best answer" do
+          let!(:best_answer) { create(:answer, question: question, user: user2, best: true) }
+          before do
+            sign_in user
+            mark_best
+          end
 
-        it "redirects to question page" do
-          expect(response).to redirect_to question
+          it "doesn't mark the answer as best" do
+            expect(answer.reload).not_to be_best
+          end
+
+          it "redirects to question page" do
+            expect(response).to redirect_to question
+          end
         end
       end
 
@@ -166,6 +185,7 @@ RSpec.describe AnswersController, type: :controller do
           sign_in user
           mark_best
         end
+
         it "redirects to question page" do
           expect(response).to redirect_to question
         end
