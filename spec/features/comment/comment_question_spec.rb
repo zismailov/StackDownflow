@@ -8,7 +8,7 @@ RSpec.feature "Questions Commenting", "
 
   let(:user) { create(:user) }
   let(:question) { create(:question, user: user) }
-  let(:comment) { build(:comment, user: user) }
+  let(:comment) { build(:question_comment, user: user, commentable: question) }
 
   scenario "User comments question" do
     post_comment comment.body

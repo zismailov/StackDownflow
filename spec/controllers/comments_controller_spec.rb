@@ -2,11 +2,12 @@ require "rails_helper"
 
 RSpec.describe CommentsController, type: :controller do
   let(:user) { create(:user) }
+  let(:user2) { create(:user) }
   let(:question) { create(:question, user: user) }
-  let(:comment) { build(:comment, user: user) }
+  let(:comment) { create(:question_comment, user: user, commentable: question) }
 
   describe "#create" do
-    let(:attributes) { attributes_for(:comment) }
+    let(:attributes) { attributes_for(:question_comment) }
     let(:post_create) do
       post :create, params: { question_id: question.id, comment: attributes }
     end
@@ -26,7 +27,7 @@ RSpec.describe CommentsController, type: :controller do
       end
 
       context "with invalid data" do
-        let(:attributes) { attributes_for :invalid_comment }
+        let(:attributes) { attributes_for(:question_comment, body: nil) }
 
         it "doesn't add a new comment to database" do
           sign_in user
@@ -44,6 +45,93 @@ RSpec.describe CommentsController, type: :controller do
     context "as an guest user" do
       it "redirects to the sign in page" do
         post_create
+        expect(response).to redirect_to new_user_session_path
+      end
+    end
+  end
+
+  describe "#edit" do
+    let(:get_edit) do
+      get :edit, params: { question_id: question.id, id: comment.id }
+    end
+
+    context "as an authenticated user" do
+      context "when comment doesn't belong to current user" do
+        let(:comment) { create(:question_comment, user: user2, commentable: question) }
+        before do
+          sign_in user
+          get_edit
+        end
+
+        it "redirects to question page" do
+          expect(response).to redirect_to question_path(question)
+        end
+      end
+    end
+
+    context "as an guest user" do
+      before { get_edit }
+
+      it "redirects to sign in page" do
+        expect(response).to redirect_to new_user_session_path
+      end
+    end
+  end
+
+  describe "#update" do
+    let(:attributes) { attributes_for(:question_comment, body: comment.body.reverse) }
+    let(:put_update) do
+      put :update, params: { question_id: question.id, id: comment.id, comment: attributes }
+    end
+
+    context "as an authenticated user" do
+      context "comment belongs to current user" do
+        context "with valid data" do
+          before do
+            sign_in user
+            put_update
+          end
+
+          it "changes comment's attribute" do
+            # expect(comment.body.reverse).to eq comment.reload.body
+            expect(comment.reload.body).to eq attributes[:body]
+          end
+
+          it "redirects to question page" do
+            expect(response).to redirect_to question_path(question)
+          end
+        end
+
+        context "with invalid data" do
+          let(:attributes) { attributes_for(:question_comment, body: "") }
+          before do
+            sign_in user
+            put_update
+          end
+
+          it "doesn't change comment's attribute" do
+            expect(comment.reload.body).not_to eq attributes[:body]
+          end
+        end
+      end
+
+      context "comment doesn't belong to current user" do
+        let(:user) { user2 }
+        before do
+          sign_in user
+          put_update
+        end
+
+        it "redirects to question page" do
+          expect(response).to redirect_to question_path(question)
+        end
+      end
+    end
+
+    context "as an guest user" do
+      before { put_update }
+
+      it "redirects to sign in page" do
         expect(response).to redirect_to new_user_session_path
       end
     end

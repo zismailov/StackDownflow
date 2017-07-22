@@ -1,11 +1,7 @@
 FactoryGirl.define do
-  factory :comment do
-    body "MyTextString"
-    commentable_id 1
-    commentable_type "Question"
-
-    factory :invalid_comment do
-      body ""
-    end
+  factory :question_comment, class: "Comment" do
+    body "This is a question comment, yo!"
+    association :commentable, factory: :question
+    user
   end
 end
