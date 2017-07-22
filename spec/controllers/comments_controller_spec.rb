@@ -4,7 +4,8 @@ RSpec.describe CommentsController, type: :controller do
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
   let(:question) { create(:question, user: user) }
-  let(:comment) { create(:question_comment, user: user, commentable: question) }
+  let!(:comment) { create(:question_comment, user: user, commentable: question) }
+  let!(:comment2) { create(:question_comment, user: user2, commentable: question) }
 
   describe "#create" do
     let(:attributes) { attributes_for(:question_comment) }
@@ -132,6 +133,46 @@ RSpec.describe CommentsController, type: :controller do
       before { put_update }
 
       it "redirects to sign in page" do
+        expect(response).to redirect_to new_user_session_path
+      end
+    end
+  end
+
+  describe "#destroy" do
+    let(:delete_destroy) do
+      delete :destroy, params: { question_id: question.id, id: comment.id }
+    end
+
+    context "as an authenticated user" do
+      context "when comment belongs to current user" do
+        before { sign_in user }
+        it "removes the comment" do
+          expect { delete_destroy }.to change(Comment, :count).by(-1)
+        end
+
+        it "redirects to question page" do
+          delete_destroy
+          expect(response).to redirect_to question_path(question)
+        end
+      end
+
+      context "when comment doesn't belong to current user" do
+        let(:comment) { comment2 }
+        before { sign_in user }
+        it "doesn't remove the comment" do
+          expect { delete_destroy }.not_to change(Comment, :count)
+        end
+
+        it "redirects to question page" do
+          delete_destroy
+          expect(response).to redirect_to question_path(question)
+        end
+      end
+    end
+
+    context "as an guest user" do
+      it "redirects to sign in page" do
+        delete_destroy
         expect(response).to redirect_to new_user_session_path
       end
     end

@@ -1,8 +1,8 @@
 class CommentsController < ApplicationController
   before_action :authenticate_user!
   before_action :set_question
-  before_action :set_comment, only: [:edit, :update]
-  before_action :comment_belongs_to_current_user?, only: [:edit, :update]
+  before_action :set_comment, only: [:edit, :update, :destroy]
+  before_action :comment_belongs_to_current_user?, only: [:edit, :update, :destroy]
 
   def create
     @comment = @question.comments.new(comment_params)
@@ -24,6 +24,11 @@ class CommentsController < ApplicationController
     else
       render :edit
     end
+  end
+
+  def destroy
+    @comment.destroy
+    redirect_to question_path(@question), success: "Comment is deleted!"
   end
 
   private
