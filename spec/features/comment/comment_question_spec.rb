@@ -21,7 +21,7 @@ RSpec.feature "Questions Commenting", "
   scenario "User comments question with invalid data" do
     post_comment ""
 
-    expect(page).to have_content "Comment is not created!"
+    expect(page).to have_content "Invalid data!"
   end
 end
 
