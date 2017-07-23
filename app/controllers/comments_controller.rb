@@ -1,19 +1,19 @@
 class CommentsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_question
+  before_action :set_commentable
   before_action :set_comment, only: [:edit, :update, :destroy]
   before_action :comment_belongs_to_current_user?, only: [:edit, :update, :destroy]
 
   def create
-    @comment = @question.comments.new(comment_params)
+    @comment = @commentable.comments.new(comment_params)
     @comment.user = current_user
 
     if @comment.save
       flash[:success] = "Comment is created!"
     else
-      flash[:danger] = "Comment is not created!"
+      flash[:danger] = "Invalid data! Comment length should be more than 10 symbols!"
     end
-    redirect_to question_path(@question)
+    redirect_to @commentable
   end
 
   def edit; end
@@ -37,15 +37,16 @@ class CommentsController < ApplicationController
     params.require(:comment).permit(:body)
   end
 
-  def set_question
-    @question = Question.find(params[:question_id])
+  def set_commentable
+    klass = [Question, Answer].detect { |c| params["#{c.name.underscore}_id"] }
+    @commentable = klass.find(params[:question_id])
   end
 
   def set_comment
-    @comment = @question.comments.find(params[:id])
+    @comment = @commentable.comments.find(params[:id])
   end
 
   def comment_belongs_to_current_user?
-    redirect_to question_path(@question) unless @comment.user == current_user
+    redirect_to redirect_to @commentable unless @comment.user == current_user
   end
 end
