@@ -1,0 +1,8 @@
+= render "errors", model: @comment
+= form_for [@comment.commentable, @comment] do |f|
+  .form-group.row
+    .col-md-12
+      = f.text_area :body, class: "form-control", rows: 10
+  .form-group.row
+    .col-md-12
+      = f.submit "Edit", class: "btn btn-success"

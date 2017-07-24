@@ -18,7 +18,7 @@ RSpec.feature "Edit Question", type: :feature do
     expect(page).to have_content "Body"
 
     fill_in "Body", with: question1.body.reverse
-    click_on "Edit"
+    click_on "Update"
 
     expect(page).to have_content question1.body.reverse
   end

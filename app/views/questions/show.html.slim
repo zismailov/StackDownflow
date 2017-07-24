@@ -1,3 +1,4 @@
+= title @question.title
 .row
   .col-md-12
     header class="page-header"
@@ -25,13 +26,14 @@
           - if user_signed_in?
             li
               = link_to "Comment", "#", class: "comment-question", id: "show-question-comment-textarea"
-        = form_for @comment, url: question_comments_path(@question) do |f|
-          .form-group.row
-            .col-md-12
-              = f.text_area :body, class: "form-control", rows: 10
-          .form-group.row
-            .col-md-12.text-right
-              = f.submit "Post comment", class: "btn btn-primary"
+          = form_for @comment, url: question_comments_path(@question) do |f|
+            .form-group.row
+              .col-md-12
+                = f.text_area :body, class: "form-control", rows: 10
+            .form-group.row
+              .col-md-12.text-right
+                = f.submit "Post comment", class: "btn btn-primary"
+
     .answers
       h3 = pluralize(@answers.count, "Answer")
       = render @answers, best_answer: @question.best_answer?
@@ -40,7 +42,6 @@
         h3 Post answer
         .row
           .col-md-10
-            = render "errors", model: @answer
             = form_for @answer, url: question_answers_path(@question.id) do |f|
               .form-group.row
                 .col-md-12
