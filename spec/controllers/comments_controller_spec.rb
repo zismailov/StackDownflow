@@ -10,7 +10,7 @@ RSpec.describe CommentsController, type: :controller do
   describe "#create" do
     let(:attributes) { attributes_for(:question_comment) }
     let(:post_create) do
-      post :create, params: { question_id: question.id, comment: attributes, format: :js }
+      post :create, params: { question_id: question.id, comment: attributes }, format: :js
     end
 
     context "as an authenticated user" do
@@ -56,7 +56,7 @@ RSpec.describe CommentsController, type: :controller do
 
   describe "#edit" do
     let(:get_edit) do
-      get :edit, params: { question_id: question.id, id: comment.id }
+      get :edit, params: { question_id: question.id, id: comment.id }, format: :js
     end
 
     context "as an authenticated user" do
@@ -67,8 +67,8 @@ RSpec.describe CommentsController, type: :controller do
           get_edit
         end
 
-        it "redirects to question page" do
-          expect(response).to redirect_to question_path(question)
+        it "returns 403 error code" do
+          expect(response.status).to eq 403
         end
       end
     end
@@ -77,7 +77,7 @@ RSpec.describe CommentsController, type: :controller do
       before { get_edit }
 
       it "redirects to sign in page" do
-        expect(response).to redirect_to new_user_session_path
+        expect(response.status).to eq 401
       end
     end
   end
@@ -85,7 +85,7 @@ RSpec.describe CommentsController, type: :controller do
   describe "#update" do
     let(:attributes) { attributes_for(:question_comment, body: comment.body.reverse) }
     let(:put_update) do
-      put :update, params: { question_id: question.id, id: comment.id, comment: attributes }
+      put :update, params: { question_id: question.id, id: comment.id, comment: attributes }, format: :js
     end
 
     context "as an authenticated user" do
@@ -99,10 +99,6 @@ RSpec.describe CommentsController, type: :controller do
           it "changes comment's attribute" do
             # expect(comment.body.reverse).to eq comment.reload.body
             expect(comment.reload.body).to eq attributes[:body]
-          end
-
-          it "redirects to question page" do
-            expect(response).to redirect_to question_path(question)
           end
         end
 
@@ -120,14 +116,15 @@ RSpec.describe CommentsController, type: :controller do
       end
 
       context "comment doesn't belong to current user" do
-        let(:user) { user2 }
+        # let(:user) { user2 }
+        let(:comment) { comment2 }
         before do
           sign_in user
           put_update
         end
 
-        it "redirects to question page" do
-          expect(response).to redirect_to question_path(question)
+        it "returns 403 error" do
+          expect(response.status).to eq 403
         end
       end
     end
@@ -136,14 +133,14 @@ RSpec.describe CommentsController, type: :controller do
       before { put_update }
 
       it "redirects to sign in page" do
-        expect(response).to redirect_to new_user_session_path
+        expect(response.status).to eq 401
       end
     end
   end
 
   describe "#destroy" do
     let(:delete_destroy) do
-      delete :destroy, params: { question_id: question.id, id: comment.id, format: :js }
+      delete :destroy, params: { question_id: question.id, id: comment.id }, format: :js
     end
 
     context "as an authenticated user" do
@@ -167,9 +164,9 @@ RSpec.describe CommentsController, type: :controller do
           expect { delete_destroy }.not_to change(Comment, :count)
         end
 
-        it "redirects to question page" do
+        it "returns 403 error" do
           delete_destroy
-          expect(response).to redirect_to question_path(question)
+          expect(response.status).to eq 403
         end
       end
     end
