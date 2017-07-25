@@ -9,11 +9,10 @@ class CommentsController < ApplicationController
     @comment.user = current_user
 
     if @comment.save
-      flash[:success] = "Comment is created!"
+      flash.now[:success] = "Comment is created!"
     else
-      flash[:danger] = "Invalid data! Comment length should be more than 10 symbols!"
+      flash.now[:danger] = "Invalid data! Comment length should be more than 10 symbols!"
     end
-    redirect_to @return_path
   end
 
   def edit; end
@@ -28,7 +27,7 @@ class CommentsController < ApplicationController
 
   def destroy
     @comment.destroy
-    redirect_to @return_path, success: "Comment is deleted!"
+    flash.now[:success] = "Comment is deleted!"
   end
 
   private

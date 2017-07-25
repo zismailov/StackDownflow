@@ -11,7 +11,7 @@ RSpec.feature "Answer Commenting", "
   let(:answer) { create(:answer, user: user, question: question) }
   let(:comment) { build(:answer_comment, user: user, commentable: answer) }
 
-  scenario "User comments answer" do
+  scenario "User comments answer", js: true do
     post_answer_comment answer.id, comment.body
 
     within(".answer") do
@@ -19,7 +19,7 @@ RSpec.feature "Answer Commenting", "
     end
   end
 
-  scenario "User comments answer with invalid data" do
+  scenario "User comments answer with invalid data", js: true do
     post_answer_comment answer.id, ""
 
     expect(page).to have_content "Invalid data!"

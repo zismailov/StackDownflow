@@ -12,7 +12,7 @@ RSpec.feature "Edit Question Comment", type: :feature do
     visit question_path(question)
   end
 
-  scenario "User edits his question comment" do
+  scenario "User edits his question comment", js: true do
     edit_comment_with question_comment.body.reverse
 
     within(".comments") do
@@ -20,13 +20,13 @@ RSpec.feature "Edit Question Comment", type: :feature do
     end
   end
 
-  scenario "User edits his question comment with valid data" do
+  scenario "User edits his question comment with valid data", js: true do
     edit_comment_with ""
 
     expect(page).to have_content "problems"
   end
 
-  scenario "User can't edit not his comment" do
+  scenario "User can't edit not his comment", js: true do
     within(".comment[data-comment-id='#{question_comment2.id}']") do
       expect(page).not_to have_selector "edit"
     end
