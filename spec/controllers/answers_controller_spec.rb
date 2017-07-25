@@ -41,7 +41,33 @@ RSpec.describe AnswersController, type: :controller do
     context "as a guest" do
       before { post_create }
       it "redirects to sign in page" do
-        # expect(response).to redirect_to new_user_session_path
+        expect(response.status).to eq 401
+      end
+    end
+  end
+
+  describe "#edit" do
+    let(:get_edit) do
+      get :edit, params: { question_id: question.id, id: answer.id, format: :js }
+    end
+
+    context "as an authenticated user" do
+      context "when answer doesn't belong to current user" do
+        let(:answer) { create(:answer, question: question, user: user2) }
+        before do
+          sign_in user
+          get_edit
+        end
+
+        it "redirects to root path" do
+          expect(response).to redirect_to answer.question
+        end
+      end
+    end
+
+    context "as an guest user" do
+      before { get_edit }
+      it "redirects to sign in page" do
         expect(response.status).to eq 401
       end
     end
@@ -53,40 +79,65 @@ RSpec.describe AnswersController, type: :controller do
       edited_answer.body = answer.body.reverse
       edited_answer
     end
+    let(:put_update) do
+      put :update, params: {
+        question_id: question.id, id: answer.id, answer: { body: edited_answer.body }, format: :js
+      }
+    end
 
     context "as an authenticated user" do
       context "with valid attributes" do
-        it "changes answer's field" do
+        before do
           sign_in user
-          put :update, params: { question_id: question.id, id: answer.id, answer: { body: edited_answer.body } }
+          put_update
+        end
+
+        it "changes answer's field" do
           expect(Answer.find(answer.id).body).to eq edited_answer.body
         end
       end
 
       context "with invalid attributes" do
         before do
+          sign_in user
           edited_answer.body = nil
-          put :update, params: { question_id: question.id, id: answer.id, answer: { body: edited_answer.body } }
+          put :update, params: {
+            question_id: question.id, id: answer.id, answer: { body: edited_answer.body }, format: :js
+          }
         end
 
         it "doesn't change answer's field" do
-          sign_in user
           expect(answer.body).not_to eq edited_answer.body
+        end
+      end
+
+      context "when answer doesn't belong to current user" do
+        let(:answer) { create(:answer, question: question, user: user2) }
+
+        before do
+          sign_in user
+          put_update
+        end
+
+        it "doesn't change answer's field" do
+          expect(answer.body).not_to eq edited_answer.body
+        end
+
+        it "redirects to root path" do
+          expect(response).to redirect_to answer.question
         end
       end
     end
 
     context "as an guest user" do
-      before do
-        put :update, params: { question_id: question.id, id: answer.id, answer: { body: edited_answer.body } }
-      end
+      before { put_update }
 
       it "doesn't change answer's attribute" do
         expect(answer.body).not_to eq edited_answer.body
       end
 
-      it "redirects to root path" do
-        expect(response).to redirect_to new_user_session_path
+      it "redirects to sign in page" do
+        expect(response.status).to eq 401
       end
     end
   end
@@ -107,7 +158,7 @@ RSpec.describe AnswersController, type: :controller do
         # it "redirects to root path" do
         #   sign_in user
         #   delete_destroy
-        #   expect(response).to redirect_to root_path
+        #   expect(response).to render_template :destroy
         # end
       end
 
@@ -122,7 +173,7 @@ RSpec.describe AnswersController, type: :controller do
         it "redirects to root path" do
           sign_in user
           delete_destroy
-          expect(response).to redirect_to root_path
+          expect(response).to redirect_to answer.question
         end
       end
     end
@@ -134,7 +185,6 @@ RSpec.describe AnswersController, type: :controller do
 
       it "redirects to sign in path" do
         delete_destroy
-        # expect(response).to redirect_to new_user_session_path
         expect(response.status).to eq 401
       end
     end

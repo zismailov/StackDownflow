@@ -20,10 +20,9 @@ class AnswersController < ApplicationController
 
   def update
     if @answer.update(answer_params)
-      flash[:success] = "Answer is updated!"
-      redirect_to question_path(@answer.question)
+      flash.now[:success] = "Answer is updated!"
     else
-      render :edit
+      flash.now[:danger] = "Answer is not updated! See errors below."
     end
   end
 
@@ -54,7 +53,7 @@ class AnswersController < ApplicationController
   end
 
   def answer_belongs_to_current_user?
-    redirect_to root_path unless @answer.user == current_user
+    redirect_to @answer.question unless @answer.user == current_user
   end
 
   def question_belongs_to_current_user?
