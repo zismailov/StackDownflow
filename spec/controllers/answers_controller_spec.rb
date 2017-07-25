@@ -9,7 +9,7 @@ RSpec.describe AnswersController, type: :controller do
   describe "#create" do
     let(:attributes) { attributes_for :answer }
     let(:post_create) do
-      post :create, params: { question_id: question.id, answer: attributes, format: :js }
+      post :create, params: { question_id: question.id, answer: attributes }, format: :js
     end
 
     context "as an authenticated user" do
@@ -40,7 +40,7 @@ RSpec.describe AnswersController, type: :controller do
 
     context "as a guest" do
       before { post_create }
-      it "redirects to sign in page" do
+      it "return 401 error" do
         expect(response.status).to eq 401
       end
     end
@@ -48,7 +48,7 @@ RSpec.describe AnswersController, type: :controller do
 
   describe "#edit" do
     let(:get_edit) do
-      get :edit, params: { question_id: question.id, id: answer.id, format: :js }
+      get :edit, params: { question_id: question.id, id: answer.id }, format: :js
     end
 
     context "as an authenticated user" do
@@ -59,7 +59,7 @@ RSpec.describe AnswersController, type: :controller do
           get_edit
         end
 
-        it "redirects to root path" do
+        it "redirects to question" do
           expect(response).to redirect_to answer.question
         end
       end
@@ -67,7 +67,7 @@ RSpec.describe AnswersController, type: :controller do
 
     context "as an guest user" do
       before { get_edit }
-      it "redirects to sign in page" do
+      it "returns 401 error" do
         expect(response.status).to eq 401
       end
     end
@@ -101,9 +101,7 @@ RSpec.describe AnswersController, type: :controller do
         before do
           sign_in user
           edited_answer.body = nil
-          put :update, params: {
-            question_id: question.id, id: answer.id, answer: { body: edited_answer.body }, format: :js
-          }
+          put_update
         end
 
         it "doesn't change answer's field" do
@@ -123,7 +121,7 @@ RSpec.describe AnswersController, type: :controller do
           expect(answer.body).not_to eq edited_answer.body
         end
 
-        it "redirects to root path" do
+        it "redirect to question" do
           expect(response).to redirect_to answer.question
         end
       end
@@ -136,7 +134,7 @@ RSpec.describe AnswersController, type: :controller do
         expect(answer.body).not_to eq edited_answer.body
       end
 
-      it "redirects to sign in page" do
+      it "returns 401 error" do
         expect(response.status).to eq 401
       end
     end
@@ -170,7 +168,7 @@ RSpec.describe AnswersController, type: :controller do
           expect { delete_destroy }.not_to change(Answer, :count)
         end
 
-        it "redirects to root path" do
+        it "redirect to question" do
           sign_in user
           delete_destroy
           expect(response).to redirect_to answer.question
@@ -183,7 +181,7 @@ RSpec.describe AnswersController, type: :controller do
         expect { delete_destroy }.not_to change(Answer, :count)
       end
 
-      it "redirects to sign in path" do
+      it "returns 401 error" do
         delete_destroy
         expect(response.status).to eq 401
       end

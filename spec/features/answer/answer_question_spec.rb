@@ -27,6 +27,6 @@ RSpec.feature "Answer a Question", "
   scenario "Authenticated user answers another user's question without filling a required field", js: true do
     click_on "Answer"
 
-    expect(page).to have_selector ".alert-danger"
+    expect(page).to have_selector ".alert-danger", text: "problems"
   end
 end

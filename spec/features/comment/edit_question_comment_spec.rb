@@ -15,7 +15,7 @@ RSpec.feature "Edit Question Comment", type: :feature do
   scenario "User edits his question comment", js: true do
     edit_comment_with question_comment.body.reverse
 
-    within(".comments") do
+    within(".question .comments") do
       expect(page).to have_content question_comment.body.reverse
     end
   end
@@ -27,18 +27,17 @@ RSpec.feature "Edit Question Comment", type: :feature do
   end
 
   scenario "User can't edit not his comment", js: true do
-    within("#comment_#{question_comment2.id}") do
+    within(".question #comment_#{question_comment2.id}") do
       expect(page).not_to have_selector "edit"
     end
   end
 end
 
 def edit_comment_with(new_comment_body)
-  within("#comment_#{question_comment.id}") do
+  within(".question #comment_#{question_comment.id}") do
     click_link "edit"
     expect(page).to have_selector "textarea"
+    fill_in "comment_body", with: new_comment_body
+    click_on "Update Comment"
   end
-
-  fill_in "comment_body", with: new_comment_body
-  click_on "Update Comment"
 end

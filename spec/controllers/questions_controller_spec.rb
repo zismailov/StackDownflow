@@ -95,7 +95,7 @@ RSpec.describe QuestionsController, type: :controller do
         expect(question.reload.title).not_to eq other_question.title
       end
 
-      it "redirects to the sign in page" do
+      it "returns 401 error" do
         question_params = FactoryGirl.attributes_for(:question)
         patch :update, params: { id: question.id, question: question_params }, format: :js
         expect(response.status).to eq 401

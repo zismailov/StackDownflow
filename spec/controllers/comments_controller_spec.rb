@@ -45,10 +45,9 @@ RSpec.describe CommentsController, type: :controller do
       end
     end
 
-    context "as an guest user" do
+    context "returns 401 error" do
       it "redirects to the sign in page" do
         post_create
-        # expect(response).to redirect_to new_user_session_path
         expect(response.status).to eq 401
       end
     end
@@ -76,7 +75,7 @@ RSpec.describe CommentsController, type: :controller do
     context "as an guest user" do
       before { get_edit }
 
-      it "redirects to sign in page" do
+      it "returns 401 error" do
         expect(response.status).to eq 401
       end
     end
@@ -116,7 +115,6 @@ RSpec.describe CommentsController, type: :controller do
       end
 
       context "comment doesn't belong to current user" do
-        # let(:user) { user2 }
         let(:comment) { comment2 }
         before do
           sign_in user
@@ -132,7 +130,7 @@ RSpec.describe CommentsController, type: :controller do
     context "as an guest user" do
       before { put_update }
 
-      it "redirects to sign in page" do
+      it "returns 401 error" do
         expect(response.status).to eq 401
       end
     end
@@ -172,9 +170,8 @@ RSpec.describe CommentsController, type: :controller do
     end
 
     context "as an guest user" do
-      it "redirects to sign in page" do
+      it "returns 401 error" do
         delete_destroy
-        # expect(response).to redirect_to new_user_session_path
         expect(response.status).to eq 401
       end
     end
