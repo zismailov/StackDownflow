@@ -27,19 +27,19 @@ RSpec.feature "Edit Question Comment", type: :feature do
   end
 
   scenario "User can't edit not his comment", js: true do
-    within(".comment[data-comment-id='#{question_comment2.id}']") do
+    within("#comment_#{question_comment2.id}") do
       expect(page).not_to have_selector "edit"
     end
   end
 end
 
 def edit_comment_with(new_comment_body)
-  within(".comment[data-comment-id='#{question_comment.id}']") do
+  within("#comment_#{question_comment.id}") do
     click_link "edit"
   end
 
   expect(page).to have_content "Edit comment"
 
   fill_in "comment_body", with: new_comment_body
-  click_on "Update"
+  click_on "Update Comment"
 end
