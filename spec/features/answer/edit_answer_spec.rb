@@ -19,7 +19,7 @@ RSpec.feature "Edit Answer", type: :feature do
     expect(page).to have_content answer2.body
 
     fill_in "answer_body", with: answer2.body.reverse
-    click_button "Edit"
+    click_button "Update"
 
     expect(page).to have_content answer2.body.reverse
   end

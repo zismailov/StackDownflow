@@ -15,6 +15,7 @@ gem "bootstrap-sass"
 gem "coffee-rails", "~> 4.2"
 gem "jbuilder", "~> 2.5"
 gem "jquery-rails"
+gem "simple_form"
 gem "slim-rails"
 
 gem "devise"
@@ -23,6 +24,7 @@ group :test do
   gem "capybara"
   gem "database_cleaner"
   gem "faker"
+  gem "selenium-webdriver"
   gem "shoulda-matchers"
 end
 

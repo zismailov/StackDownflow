@@ -26,6 +26,6 @@ RSpec.feature "Question", "
   scenario "Authenticated user asks a question without filling required fields" do
     click_on "Create"
 
-    expect(page).to have_content "error"
+    expect(page).to have_content "problems"
   end
 end

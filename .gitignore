@@ -16,6 +16,8 @@
 /node_modules
 /yarn-error.log
 
+.idea
+
 # On mac
 .DS_Store
 

@@ -37,6 +37,7 @@ class CommentsController < ApplicationController
     params.require(:comment).permit(:body)
   end
 
+  # rubocop:disable Metrics/AbcSize
   def set_commentable
     if !params[:answer_id].nil?
       @commentable = Answer.find(params[:answer_id])

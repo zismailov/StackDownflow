@@ -9,7 +9,7 @@ RSpec.describe AnswersController, type: :controller do
   describe "#create" do
     let(:attributes) { attributes_for :answer }
     let(:post_create) do
-      post :create, params: { question_id: question.id, answer: attributes }
+      post :create, params: { question_id: question.id, answer: attributes, format: :js }
     end
 
     context "as an authenticated user" do
@@ -41,7 +41,8 @@ RSpec.describe AnswersController, type: :controller do
     context "as a guest" do
       before { post_create }
       it "redirects to sign in page" do
-        expect(response).to redirect_to new_user_session_path
+        # expect(response).to redirect_to new_user_session_path
+        expect(response.status).to eq 401
       end
     end
   end
@@ -92,7 +93,7 @@ RSpec.describe AnswersController, type: :controller do
 
   describe "#destroy" do
     let(:delete_destroy) do
-      delete :destroy, params: { question_id: question, id: answer }
+      delete :destroy, params: { question_id: question, id: answer, format: :js }
     end
     before { answer }
 
@@ -103,11 +104,11 @@ RSpec.describe AnswersController, type: :controller do
           expect { delete_destroy }.to change(Answer, :count).by(-1)
         end
 
-        it "redirects to root path" do
-          sign_in user
-          delete_destroy
-          expect(response).to redirect_to root_path
-        end
+        # it "redirects to root path" do
+        #   sign_in user
+        #   delete_destroy
+        #   expect(response).to redirect_to root_path
+        # end
       end
 
       context "when answer doesn't belong to current user" do
@@ -133,7 +134,8 @@ RSpec.describe AnswersController, type: :controller do
 
       it "redirects to sign in path" do
         delete_destroy
-        expect(response).to redirect_to new_user_session_path
+        # expect(response).to redirect_to new_user_session_path
+        expect(response.status).to eq 401
       end
     end
   end

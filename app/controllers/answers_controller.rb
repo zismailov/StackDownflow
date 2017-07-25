@@ -4,17 +4,15 @@ class AnswersController < ApplicationController
   before_action :set_answer, only: [:edit, :update, :destroy, :mark_best]
   before_action :answer_belongs_to_current_user?, only: [:edit, :update, :destroy]
   before_action :question_belongs_to_current_user?, only: [:mark_best]
-  before_action :variables_for_question_show, only: [:create]
 
   def create
     @answer = @question.answers.new(answer_params)
     @answer.user = current_user
+    @comment = Comment.new
     if @answer.save
-      flash[:success] = "Answer is created!"
-      redirect_to @question
+      flash.now[:success] = "Answer is created!"
     else
       flash.now[:danger] = "Answer is not created! See errors below."
-      render "questions/show"
     end
   end
 
@@ -30,9 +28,10 @@ class AnswersController < ApplicationController
   end
 
   def destroy
+    @question = @answer.question
+    @answer_id = @answer.id
     @answer.destroy
-    flash[:success] = "Answer is deleted!"
-    redirect_to root_path
+    flash.now[:success] = "Answer is deleted!"
   end
 
   def mark_best
