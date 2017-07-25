@@ -5,6 +5,8 @@ abort("The Rails environment is running in production mode!") if Rails.env.produ
 require "spec_helper"
 require "rspec/rails"
 require "support/database_cleaner"
+require "capybara/poltergeist"
+
 # Add additional requires below this line. Rails is not loaded until this point!
 
 Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }

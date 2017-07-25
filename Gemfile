@@ -24,7 +24,7 @@ group :test do
   gem "capybara"
   gem "database_cleaner"
   gem "faker"
-  gem "selenium-webdriver"
+  gem "poltergeist"
   gem "shoulda-matchers"
 end
 

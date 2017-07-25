@@ -17,7 +17,6 @@ RSpec.feature "Delete Answer Comment", type: :feature do
     within("#answer_#{answer.id} #comment_#{comment.id}") do
       click_on "delete"
     end
-    page.driver.browser.switch_to.alert.accept
 
     expect(page).not_to have_selector "#comment_#{comment.id}"
   end
