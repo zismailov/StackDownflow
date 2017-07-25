@@ -74,7 +74,7 @@ RSpec.describe QuestionsController, type: :controller do
       it "changes question's attribute" do
         question_params = FactoryGirl.attributes_for(:question, title: "New Question")
         sign_in user
-        patch :update, params: { id: question.id, question: question_params }
+        patch :update, params: { id: question.id, question: question_params }, format: :js
         expect(question.reload.title).to eq "New Question"
       end
     end
@@ -83,22 +83,22 @@ RSpec.describe QuestionsController, type: :controller do
       it "does not update the attribute" do
         question_params = FactoryGirl.attributes_for(:question, title: "New Question")
         sign_in user
-        patch :update, params: { id: question.id, question: question_params }
+        patch :update, params: { id: question.id, question: question_params }, format: :js
         expect(other_question.reload.title).to eq "Same New Question"
       end
     end
 
     context "as a guest" do
-      it "returns a 302 response" do
+      it "doesn't change question's attribute" do
         question_params = FactoryGirl.attributes_for(:question)
-        patch :update, params: { id: question.id, question: question_params }
-        expect(response).to have_http_status "302"
+        patch :update, params: { id: question.id, question: question_params }, format: :js
+        expect(question.reload.title).not_to eq other_question.title
       end
 
-      it "redirects to the sign-in page" do
+      it "redirects to the sign in page" do
         question_params = FactoryGirl.attributes_for(:question)
-        patch :update, params: { id: question.id, question: question_params }
-        expect(response).to redirect_to "/users/sign_in"
+        patch :update, params: { id: question.id, question: question_params }, format: :js
+        expect(response.status).to eq 401
       end
     end
   end
