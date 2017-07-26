@@ -8,6 +8,7 @@ RSpec.feature "Question", "
 
   let(:user) { create(:user) }
   let(:question) { build(:question) }
+  let(:tag) { create(:tag) }
 
   background do
     sign_in user
@@ -17,6 +18,7 @@ RSpec.feature "Question", "
   scenario "Authenticated user asks a question" do
     fill_in "Title", with: question.title
     fill_in "Body", with: question.body
+    fill_in "Tags", with: tag.name
     click_on "Create Question"
 
     expect(current_path).to match %r{\/questions\/\d+\z} # /\/questions\/\d+\z/
