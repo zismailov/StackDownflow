@@ -19,7 +19,9 @@ RSpec.describe Tag, type: :model do
 
     describe ".new_from_list" do
       it "creates new tags from list" do
-        expect { Tag.new_from_list(%w[tag1 tag2 tag3 macosx apple], question) }.to change(Tag, :count).by(2)
+        expect {
+          Tag.new_from_list([tags[0].name, tags[1].name, tags[2].name, "macosx", "apple"], question)
+        }.to change(Tag, :count).by(2)
       end
     end
   end

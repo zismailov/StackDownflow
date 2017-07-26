@@ -3,8 +3,9 @@ require "rails_helper"
 RSpec.feature "Delete Question", type: :feature do
   let(:user1) { create(:user) }
   let(:user2) { create(:user) }
-  let(:question1) { create(:question, user: user1) }
-  let(:question2) { create(:question, user: user2) }
+  let(:tags) { create_list(:tag, 5) }
+  let(:question1) { create(:question, user: user1, tags: tags) }
+  let(:question2) { create(:question, user: user2, tags: tags) }
 
   background do
     sign_in user1

@@ -6,32 +6,35 @@ RSpec.feature "Question", "
     I want to have an ability to ask, edit, and delete questions
   ", type: :feature do
 
-  let(:user) { create(:user) }
-  let(:question) { build(:question) }
-  let(:tag) { create(:tag) }
+    let(:user) { create(:user) }
+    let(:tags) { build_list(:tag, 5) }
+    let(:question) { build(:question, tags: tags) }
 
-  background do
-    sign_in user
-    visit new_question_path
+    background do
+      sign_in user
+      visit new_question_path
+    end
+
+    scenario "Authenticated user asks a question" do
+      fill_in "Title", with: question.title
+      fill_in "Body", with: question.body
+      fill_in "Tags", with: tags.map(&:name).join(" ")
+      click_on "Create Question"
+
+      expect(current_path).to match %r{\/questions\/\d+\z} # /\/questions\/\d+\z/
+
+      expect(page).to have_content question.title
+      expect(page).to have_content question.body
+      tags.each do |tag|
+        expect(page).to have_content tag.name
+      end
+    end
+
+    scenario "Authenticated user asks a question without filling required fields" do
+      click_on "Create Question"
+
+      expect(current_path).to match %r{\/questions\z}
+
+      expect(page).to have_content "problems"
+    end
   end
-
-  scenario "Authenticated user asks a question" do
-    fill_in "Title", with: question.title
-    fill_in "Body", with: question.body
-    fill_in "Tags", with: tag.name
-    click_on "Create Question"
-
-    expect(current_path).to match %r{\/questions\/\d+\z} # /\/questions\/\d+\z/
-
-    expect(page).to have_content question.title
-    expect(page).to have_content question.body
-  end
-
-  scenario "Authenticated user asks a question without filling required fields" do
-    click_on "Create Question"
-
-    expect(current_path).to match %r{\/questions\z}
-
-    expect(page).to have_content "problems"
-  end
-end

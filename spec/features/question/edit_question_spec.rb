@@ -3,8 +3,9 @@ require "rails_helper"
 RSpec.feature "Edit Question", type: :feature do
   let(:user1) { create(:user) }
   let(:user2) { create(:user) }
-  let(:question1) { create(:question, user: user1) }
-  let(:question2) { create(:question, user: user2) }
+  let(:tags) { create_list(:tag, 5) }
+  let(:question1) { create(:question, user: user1, tags: tags) }
+  let(:question2) { create(:question, user: user2, tags: tags) }
 
   background do
     sign_in user1
@@ -19,6 +20,7 @@ RSpec.feature "Edit Question", type: :feature do
 
       fill_in "Title", with: question1.title.reverse
       fill_in "Body", with: question1.body.reverse
+      fill_in "Tags", with: question1.tags.map(&:name).join(" ")
       click_on "Update Question"
     end
 

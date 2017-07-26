@@ -1,6 +1,12 @@
 require "rails_helper"
 
 RSpec.describe QuestionsController, type: :controller do
+  let(:user) { create(:user) }
+  let(:user2) { create(:user) }
+  let(:tags) { build_list(:tag, 5) }
+  let(:question) { create(:question, user: user) }
+  let(:question2) { create(:question, user: user2) }
+
   describe "#index" do
     let(:questions) { create_list(:question, 2) }
     before { get :index }
@@ -15,7 +21,6 @@ RSpec.describe QuestionsController, type: :controller do
   end
 
   describe "#show" do
-    let(:question) { create(:question) }
     before { get :show, params: { id: question.id } }
 
     it "responds successfully" do
@@ -24,80 +29,161 @@ RSpec.describe QuestionsController, type: :controller do
   end
 
   describe "#create" do
-    let(:user) { create(:user) }
-    let(:question) { create(:question) }
+    let(:attributes) { attributes_for(:question) }
+    let(:post_create) do
+      post :create, params: { question: attributes, tags: "macosx windows c++ android" }
+    end
 
-    context "as an authenticated user" do
+    context "as an authorized user" do
       context "with valid data" do
-        it "adds a questions" do
-          question_params = FactoryGirl.attributes_for(:question)
-          sign_in user
-          expect {
-            post :create, params: { question: question_params }
-          }.to change(user.questions, :count).by(1)
+        context "with a new tag" do
+          it "increases number of tags" do
+            sign_in user
+            expect { post_create }.to change(Tag, :count).by(4)
+          end
+
+          it "increases total number of questions" do
+            sign_in user
+            expect { post_create }.to change(Question, :count).by(1)
+          end
+
+          it "increases current user's number of questions" do
+            sign_in user
+            expect { post_create }.to change(Question, :count).by(1)
+          end
+        end
+
+        context "with existing tags" do
+          let!(:tag) { create(:tag) }
+          let(:post_create) do
+            sign_in user
+            post :create, params: { question: attributes, tags: "tag1 windows c++ android" }
+          end
+
+          it "increases number of tags" do
+            expect { post_create }.to change(Tag, :count).by(3)
+          end
+
+          it "increases total number of questions" do
+            expect { post_create }.to change(Question, :count).by(1)
+          end
+
+          it "increases current user's number of questions" do
+            expect { post_create }.to change(Question, :count).by(1)
+          end
         end
       end
 
       context "with invalid data" do
-        it "does not add a questions" do
-          question_params = FactoryGirl.attributes_for(:invalid_question)
+        let(:attributes) { attributes_for(:question, title: nil, body: nil) }
+
+        it "doesn't increase total questions count" do
           sign_in user
-          expect {
-            post :create, params: { question: question_params }
-          }.to_not change(user.questions, :count)
+          expect { post_create }.not_to change(Question, :count)
+        end
+
+        it "doesn't increase current user's questions count" do
+          sign_in user
+          expect { post_create }.not_to change(Question, :count)
         end
       end
     end
 
-    context "as a guest" do
-      it "returns a 302 response" do
-        question_params = FactoryGirl.attributes_for(:question)
-        post :create, params: { question: question_params }
-        expect(response).to have_http_status "302"
+    context "as an guest user" do
+      before { post_create }
+      it "redirects to the sign in page" do
+        expect(response).to redirect_to new_user_session_path
       end
+    end
+  end
 
-      it "redirects to the sign-in page" do
-        question_params = FactoryGirl.attributes_for(:question)
-        post :create, params: { question: question_params }
-        expect(response).to redirect_to "/users/sign_in"
+  describe "#edit" do
+    let(:get_edit) do
+      get :edit, params: { id: question.id }, format: :js
+    end
+
+    context "as an authorized user" do
+      context "when question doesn't belong to current user" do
+        let(:question) { question2 }
+        before do
+          sign_in user
+          get_edit
+        end
+
+        it "redirects to root page" do
+          expect(response).to redirect_to root_path
+        end
+      end
+    end
+
+    context "as an guest user" do
+      before { get_edit }
+
+      it "returns 401 error" do
+        expect(response.status).to eq 401
       end
     end
   end
 
   describe "#update" do
-    let(:user) { create(:user) }
-    let(:other_user) { create(:user) }
-    let(:question) { create(:question, user: user) }
-    let(:other_question) { create(:question, title: "Same New Question", user: other_user) }
+    let(:edited_question) do
+      edited = question.dup
+      edited.title = question.title.reverse
+      edited
+    end
+    let(:put_update) do
+      put :update, params: {
+        id: question.id, question: { title: edited_question.title, body: question.body }
+      }, format: :js
+    end
 
     context "as an authorized user" do
-      it "changes question's attribute" do
-        question_params = FactoryGirl.attributes_for(:question, title: "New Question")
-        sign_in user
-        patch :update, params: { id: question.id, question: question_params }, format: :js
-        expect(question.reload.title).to eq "New Question"
+      context "when question belongs to current user" do
+        context "with valid data" do
+          before do
+            sign_in user
+            put_update
+          end
+
+          it "changes question's attribute" do
+            expect(question.reload.title).to eq edited_question.title
+          end
+        end
+
+        context "with invalid data" do
+          before do
+            sign_in user
+            edited_question.title = nil
+            put_update
+          end
+
+          it "doesn't change question's attribute" do
+            expect(question.reload.title).not_to eq edited_question.title
+          end
+        end
+      end
+
+      context "when question doesn't belong to current user" do
+        let(:question) { question2 }
+        before do
+          sign_in user
+          put_update
+        end
+
+        it "renders root page" do
+          expect(response).to redirect_to root_path
+        end
       end
     end
 
-    context "as an unauthorized user" do
-      it "does not update the attribute" do
-        question_params = FactoryGirl.attributes_for(:question, title: "New Question")
-        sign_in user
-        patch :update, params: { id: question.id, question: question_params }, format: :js
-        expect(other_question.reload.title).to eq "Same New Question"
-      end
-    end
+    context "as an guest user" do
+      before { put_update }
 
-    context "as a guest" do
       it "doesn't change question's attribute" do
-        question_params = FactoryGirl.attributes_for(:question)
-        patch :update, params: { id: question.id, question: question_params }, format: :js
-        expect(question.reload.title).not_to eq other_question.title
+        expect(question.reload.title).not_to eq edited_question.title
       end
 
       it "returns 401 error" do
-        question_params = FactoryGirl.attributes_for(:question)
-        patch :update, params: { id: question.id, question: question_params }, format: :js
         expect(response.status).to eq 401
       end
     end
