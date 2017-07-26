@@ -12,4 +12,15 @@ RSpec.describe Tag, type: :model do
     it { should allow_value("tag", "TAG", "C++", "some_tag", "some-tag", "a123", "android-4.2").for(:name) }
     it { should_not allow_value("t a g", "123", "123a").for(:name) }
   end
+
+  describe "class methods" do
+    let(:question) { create(:question) }
+    let!(:tags) { create_list(:tag, 3) }
+
+    describe ".new_from_list" do
+      it "creates new tags from list" do
+        expect { Tag.new_from_list(%w[tag1 tag2 tag3 macosx apple], question) }.to change(Tag, :count).by(2)
+      end
+    end
+  end
 end
