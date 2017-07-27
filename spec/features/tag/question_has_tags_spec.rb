@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.feature "Question has tags", type: :feature do
   let!(:tags) { create_list(:tag, 5) }
-  let!(:question) { create(:question, tags: tags) }
+  let!(:question) { create(:question, tag_list: tags.map(&:name).join(" ")) }
 
   scenario "User visits root path and sees that questions have tags" do
     visit root_path

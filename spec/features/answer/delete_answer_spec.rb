@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.feature "Delete Answer", type: :feature do
   let(:user1) { create(:user) }
   let(:user2) { create(:user) }
-  let(:question) { create(:question, user: user1) }
+  let(:question) { create(:question, user: user1, tag_list: "test west best") }
   let!(:answer1) { create(:answer, user: user1, question: question) }
   let!(:answer2) { create(:answer, user: user2, question: question) }
 

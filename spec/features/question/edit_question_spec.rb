@@ -4,8 +4,8 @@ RSpec.feature "Edit Question", type: :feature do
   let(:user1) { create(:user) }
   let(:user2) { create(:user) }
   let(:tags) { create_list(:tag, 5) }
-  let(:question1) { create(:question, user: user1, tags: tags) }
-  let(:question2) { create(:question, user: user2, tags: tags) }
+  let(:question1) { create(:question, user: user1, tag_list: "test west best") }
+  let(:question2) { create(:question, user: user2, tag_list: "test west best") }
 
   background do
     sign_in user1
