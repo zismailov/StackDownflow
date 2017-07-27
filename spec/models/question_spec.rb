@@ -14,6 +14,16 @@ RSpec.describe Question, type: :model do
     it { should validate_length_of(:title).is_at_least(5).is_at_most(512) }
     it { should validate_length_of(:body).is_at_least(10).is_at_most(5000) }
     it { should validate_presence_of :tag_list }
+    it {
+      should allow_value(
+        "tag1 tag2 tag3 c++ c# andoird-4.0 c-- some_tag", "sole_tag"
+      ).for(:tag_list)
+    }
+    it {
+      should_not allow_value(
+        "tag1 ###", "tag1 123a", "tag1 +++", "123tag tag2", "##woot##", "tag@tag"
+      ).for(:tag_list)
+    }
   end
 
   describe "methods" do
