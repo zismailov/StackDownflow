@@ -8,10 +8,7 @@ class Tag < ApplicationRecord
                              message: "can contain only letters, digits, ., +, -, _, and #.
                                       It must begin with a letter." }
 
-  def self.new_from_list(tags, model)
-    tags.each do |tag|
-      new_tag = find_by_name(tag) || create(name: tag)
-      new_tag.questions << model
-    end
+  def self.create_from_list(tags)
+    tags.map { |tag| find_by_name(tag) || create(name: tag) }
   end
 end
