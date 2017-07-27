@@ -16,19 +16,19 @@ RSpec.describe Question, type: :model do
     it { should validate_presence_of :tag_list }
     it {
       should allow_value(
-        "tag1 tag2 tag3 c++ c# andoird-4.0 c-- some_tag", "sole_tag"
+        "tag1,tag2,tag3,c++,c#,andoird-4.0,c--,some_tag", "sole_tag"
       ).for(:tag_list)
     }
     it {
       should_not allow_value(
-        "tag1 ###", "tag1 123a", "tag1 +++", "123tag tag2", "##woot##", "tag@tag"
+        "tag1,###", "tag1,123a", "tag1,+++", "123tag,tag2", "##woot##", "tag@tag"
       ).for(:tag_list)
     }
   end
 
   describe "methods" do
     let(:tags) { create_list(:tag, 1) }
-    let(:question) { create(:question, tag_list: tags.map(&:name).join(" ")) }
+    let(:question) { create(:question, tag_list: tags.map(&:name).join(",")) }
     let!(:answer2) { create(:answer, question: question) }
 
     describe "#best_answer?" do
@@ -50,7 +50,7 @@ RSpec.describe Question, type: :model do
 
   describe "before_save" do
     user = FactoryGirl.create(:user)
-    question = Question.new(title: "Some good title", body: "Some good body", tag_list: "test west east", user: user)
+    question = Question.new(title: "Some good title", body: "Some good body", tag_list: "test,west,east", user: user)
 
     it "creates tags" do
       expect { question.save }.to change(Tag, :count).by(3)

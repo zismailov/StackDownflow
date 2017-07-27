@@ -4,11 +4,11 @@ RSpec.describe QuestionsController, type: :controller do
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
   let(:tags) { build_list(:tag, 5) }
-  let(:question) { create(:question, user: user, tag_list: tags.map(&:name).join(" ")) }
-  let(:question2) { create(:question, user: user2, tag_list: tags.map(&:name).join(" ")) }
+  let(:question) { create(:question, user: user, tag_list: tags.map(&:name).join(",")) }
+  let(:question2) { create(:question, user: user2, tag_list: tags.map(&:name).join(",")) }
 
   describe "#index" do
-    let(:questions) { create_list(:question, 2, tag_list: tags.map(&:name).join(" ")) }
+    let(:questions) { create_list(:question, 2, tag_list: tags.map(&:name).join(",")) }
     before { get :index }
 
     it "returns a list of questions" do
@@ -30,7 +30,7 @@ RSpec.describe QuestionsController, type: :controller do
 
   describe "#create" do
     let(:attributes) { attributes_for(:question) }
-    let(:attributes) { attributes_for(:question, tag_list: "macosx windows c++ android") }
+    let(:attributes) { attributes_for(:question, tag_list: "macosx,windows,c++,android") }
     let(:post_create) do
       post :create, params: { question: attributes }
     end
@@ -56,7 +56,7 @@ RSpec.describe QuestionsController, type: :controller do
 
         context "with existing tags" do
           let!(:tag) { create(:tag) }
-          let(:attributes) { attributes_for(:question, tag_list: "#{tag.name} windows c++ android") }
+          let(:attributes) { attributes_for(:question, tag_list: "#{tag.name},windows,c++,android") }
 
           it "increases number of tags" do
             sign_in user
@@ -135,7 +135,7 @@ RSpec.describe QuestionsController, type: :controller do
     let(:put_update) do
       put :update, params: {
         id: question.id, question: {
-          title: edited_question.title, body: question.body, tag_list: tags.map(&:name).join(" ")
+          title: edited_question.title, body: question.body, tag_list: tags.map(&:name).join(",")
         }
       }, format: :js
     end
@@ -194,10 +194,10 @@ RSpec.describe QuestionsController, type: :controller do
 
   describe "#destroy" do
     let!(:user) { create(:user) }
-    let!(:question) { create(:question, user: user, tag_list: tags.map(&:name).join(" ")) }
+    let!(:question) { create(:question, user: user, tag_list: tags.map(&:name).join(",")) }
 
     let!(:other_user) { create(:user) }
-    let!(:other_question) { create(:question, user: other_user, tag_list: tags.map(&:name).join(" ")) }
+    let!(:other_question) { create(:question, user: other_user, tag_list: tags.map(&:name).join(",")) }
 
     context "as an authorized user" do
       it "deletes a question" do

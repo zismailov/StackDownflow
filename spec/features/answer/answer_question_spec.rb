@@ -7,7 +7,7 @@ RSpec.feature "Answer a Question", "
   ", type: :feature do
 
   let(:inquirer) { create(:user) }
-  let(:question) { create(:question, user: inquirer, tag_list: "test west best") }
+  let(:question) { create(:question, user: inquirer, tag_list: "test,west,best") }
   let(:answerer) { create(:user) }
   let(:answer) { build(:answer, question: question, user: answerer) }
 

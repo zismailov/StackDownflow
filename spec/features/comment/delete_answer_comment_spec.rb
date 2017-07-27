@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.feature "Delete Answer Comment", type: :feature do
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
-  let(:question) { create(:question, user: user, tag_list: "test west best") }
+  let(:question) { create(:question, user: user, tag_list: "test,west,best") }
   let!(:answer) { create(:answer, user: user, question: question) }
   let!(:comment) { create(:answer_comment, user: user, commentable: answer) }
   let!(:comment2) { create(:answer_comment, user: user2, commentable: answer) }

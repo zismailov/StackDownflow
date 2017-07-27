@@ -19,6 +19,6 @@ class Question < ApplicationRecord
   private
 
   def add_tags_from_list
-    self.tags = Tag.create_from_list(tag_list.split(" "))
+    self.tags = Tag.create_from_list(tag_list.split(","))
   end
 end
