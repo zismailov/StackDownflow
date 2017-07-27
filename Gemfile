@@ -18,6 +18,7 @@ gem "jquery-rails"
 gem "simple_form"
 gem "slim-rails"
 
+gem "carrierwave"
 gem "devise"
 
 group :test do

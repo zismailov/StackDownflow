@@ -6,6 +6,8 @@ RSpec.describe Question, type: :model do
     it { should belong_to :user }
     it { should have_many :comments }
     it { should have_and_belong_to_many :tags }
+    it { should have_many :attachments }
+    it { should accept_nested_attributes_for :attachments }
   end
 
   describe "validations" do

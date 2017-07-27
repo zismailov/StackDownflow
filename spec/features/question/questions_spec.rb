@@ -19,6 +19,7 @@ RSpec.feature "Question", "
       fill_in "Title", with: question.title
       fill_in "Body", with: question.body
       fill_in "Tags", with: tags.map(&:name).join(",")
+      attach_file("File", "#{Rails.root}/spec/fixtures/cover_image.png")
       click_on "Create Question"
 
       expect(current_path).to match %r{\/questions\/\d+\z} # /\/questions\/\d+\z/
@@ -28,6 +29,8 @@ RSpec.feature "Question", "
       tags.each do |tag|
         expect(page).to have_content tag.name
       end
+      expect(page).to have_content "cover_image.png"
+      expect(Attachment.last.file_identifier).to eq("cover_image.png") # _identifier is 'carrierwave' method
     end
 
     scenario "Authenticated user asks a question without filling required fields" do
