@@ -18,10 +18,14 @@ RSpec.feature "Answer a Question", "
 
   scenario "Authenticated user answers another user's question", js: true do
     fill_in :answer_body, with: answer.body
+    attach_file("File", "#{Rails.root}/spec/fixtures/cover_image.png")
     click_on "Answer"
 
+    expect(current_path).to match %r{\/question\/\d+}
     expect(page).to have_content answer.body
     expect(page).to have_content answer.user.username
+    expect(page).to have_content "cover_image.png"
+    expect(Attachment.last.file_identifier).to eq("cover_image.png")
   end
 
   scenario "Authenticated user answers another user's question without filling a required field", js: true do
