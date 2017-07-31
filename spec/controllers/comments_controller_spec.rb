@@ -11,7 +11,7 @@ RSpec.describe CommentsController, type: :controller do
   describe "#create" do
     let(:attributes) { attributes_for(:question_comment) }
     let(:post_create) do
-      post :create, params: { question_id: question.id, comment: attributes }, format: :js
+      post :create, params: { question_id: question.id, comment: attributes }, format: :json
     end
 
     context "as an authenticated user" do
@@ -21,12 +21,11 @@ RSpec.describe CommentsController, type: :controller do
           expect { post_create }.to change(Comment, :count).by(1)
         end
 
-        # it "redirects to the question page" do
-        #   sign_in user
-        #   post_create
-        #   #expect(response).to redirect_to question_path(question)
-        #   expect(response).to render_template :create
-        # end
+        it "returns 201 status" do
+          sign_in user
+          post_create
+          expect(response.status).to eq 201
+        end
       end
 
       context "with invalid data" do
@@ -37,12 +36,11 @@ RSpec.describe CommentsController, type: :controller do
           expect { post_create }.not_to change(Comment, :count)
         end
 
-        # it "redirects to the question page" do
-        #   sign_in user
-        #   post_create
-        #   #expect(response).to redirect_to question_path(question)
-        #   expect(response).to render_template :create
-        # end
+        it "returns 422 status" do
+          sign_in user
+          post_create
+          expect(response.status).to eq 422
+        end
       end
     end
 
@@ -85,7 +83,7 @@ RSpec.describe CommentsController, type: :controller do
   describe "#update" do
     let(:attributes) { attributes_for(:question_comment, body: comment.body.reverse) }
     let(:put_update) do
-      put :update, params: { question_id: question.id, id: comment.id, comment: attributes }, format: :js
+      put :update, params: { question_id: question.id, id: comment.id, comment: attributes }, format: :json
     end
 
     context "as an authenticated user" do
@@ -97,8 +95,11 @@ RSpec.describe CommentsController, type: :controller do
           end
 
           it "changes comment's attribute" do
-            # expect(comment.body.reverse).to eq comment.reload.body
             expect(comment.reload.body).to eq attributes[:body]
+          end
+
+          it "returns 200 status" do
+            expect(response.status).to eq 200
           end
         end
 
@@ -111,6 +112,10 @@ RSpec.describe CommentsController, type: :controller do
 
           it "doesn't change comment's attribute" do
             expect(comment.reload.body).not_to eq attributes[:body]
+          end
+
+          it "returns 422 status" do
+            expect(response.status).to eq 422
           end
         end
       end
