@@ -18,8 +18,10 @@ gem "jquery-rails"
 gem "simple_form"
 gem "slim-rails"
 
+gem "active_model_serializers"
 gem "carrierwave"
 gem "devise"
+gem "handlebars_assets"
 gem "remotipart"
 
 group :test do

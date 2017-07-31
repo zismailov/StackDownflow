@@ -9,7 +9,7 @@ RSpec.describe AnswersController, type: :controller do
   describe "#create" do
     let(:attributes) { attributes_for :answer }
     let(:post_create) do
-      post :create, params: { question_id: question.id, answer: attributes }, format: :js
+      post :create, params: { question_id: question.id, answer: attributes }, format: :json
     end
 
     context "as an authenticated user" do
@@ -23,17 +23,31 @@ RSpec.describe AnswersController, type: :controller do
           sign_in user
           expect { post_create }.to change(user.answers, :count).by(1)
         end
+
+        it "returns 201 status code" do
+          sign_in user
+          post_create
+          expect(response.status).to eq 201
+        end
       end
 
       context "with invalid data" do
         let(:attributes) { attributes_for :invalid_answer }
 
         it "doesn't increase a total number of answers" do
+          sign_in user
           expect { post_create }.not_to change(question.answers, :count)
         end
 
         it "doesn't increase a total number of user's answers" do
+          sign_in user
           expect { post_create }.not_to change(user.answers, :count)
+        end
+
+        it "returns 422 status code" do
+          sign_in user
+          post_create
+          expect(response.status).to eq 422
         end
       end
     end
@@ -81,7 +95,7 @@ RSpec.describe AnswersController, type: :controller do
     end
     let(:put_update) do
       put :update, params: {
-        question_id: question.id, id: answer.id, answer: { body: edited_answer.body }, format: :js
+        question_id: question.id, id: answer.id, answer: { body: edited_answer.body }, format: :json
       }
     end
 
@@ -95,6 +109,10 @@ RSpec.describe AnswersController, type: :controller do
         it "changes answer's field" do
           expect(Answer.find(answer.id).body).to eq edited_answer.body
         end
+
+        it "returns 200 status" do
+          expect(response.status).to eq 200
+        end
       end
 
       context "with invalid attributes" do
@@ -106,6 +124,10 @@ RSpec.describe AnswersController, type: :controller do
 
         it "doesn't change answer's field" do
           expect(answer.body).not_to eq edited_answer.body
+        end
+
+        it "returns 422 status" do
+          expect(response.status).to eq 422
         end
       end
 
