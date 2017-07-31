@@ -19,7 +19,7 @@ Bundler.require(*Rails.groups)
 module StackDownflow
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
-    config.load_defaults 5.1
+    # config.load_defaults 5.1
 
     config.time_zone = "UTC"
     config.active_record.default_timezone = :utc

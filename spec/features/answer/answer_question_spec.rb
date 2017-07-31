@@ -21,10 +21,10 @@ RSpec.feature "Answer a Question", "
     attach_file("File", "#{Rails.root}/spec/fixtures/cover_image.png")
     click_on "Answer"
 
-    expect(current_path).to match %r{\/question\/\d+}
+    expect(current_path).to match %r{\/questions\/\d+}
     expect(page).to have_content answer.body
     expect(page).to have_content answer.user.username
-    expect(page).to have_content "cover_image.png"
+    expect(page).to have_link "cover_image.png"
     expect(Attachment.last.file_identifier).to eq("cover_image.png")
   end
 

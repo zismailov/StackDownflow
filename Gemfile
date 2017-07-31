@@ -20,6 +20,7 @@ gem "slim-rails"
 
 gem "carrierwave"
 gem "devise"
+gem "remotipart"
 
 group :test do
   gem "capybara"

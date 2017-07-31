@@ -29,7 +29,7 @@ RSpec.feature "Question", "
       tags.each do |tag|
         expect(page).to have_content tag.name
       end
-      expect(page).to have_content "cover_image.png"
+      expect(page).to have_link "cover_image.png"
       expect(Attachment.last.file_identifier).to eq("cover_image.png") # _identifier is 'carrierwave' method
     end
 
