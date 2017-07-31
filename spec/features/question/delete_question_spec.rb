@@ -4,8 +4,8 @@ RSpec.feature "Delete Question", type: :feature do
   let(:user1) { create(:user) }
   let(:user2) { create(:user) }
   let(:tags) { create_list(:tag, 5) }
-  let(:question1) { create(:question, user: user1, tag_list: "test,west,best") }
-  let(:question2) { create(:question, user: user2, tag_list: "test,west,best") }
+  let(:question1) { create(:question, user: user1) }
+  let(:question2) { create(:question, user: user2) }
 
   background do
     sign_in user1

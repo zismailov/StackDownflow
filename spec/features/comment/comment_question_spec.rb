@@ -7,7 +7,7 @@ RSpec.feature "Questions Commenting", "
   ", type: :feature do
 
   let(:user) { create(:user) }
-  let(:question) { create(:question, user: user, tag_list: "test,west,best") }
+  let(:question) { create(:question, user: user) }
   let(:comment) { build(:question_comment, user: user, commentable: question) }
 
   scenario "User comments question", js: true do

@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe AnswersController, type: :controller do
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
-  let(:question) { create(:question, user: user2, tag_list: "test,west,east") }
+  let(:question) { create(:question, user: user2) }
   let(:answer) { create(:answer, question: question, user: user) }
 
   describe "#create" do
@@ -217,7 +217,7 @@ RSpec.describe AnswersController, type: :controller do
 
     context "as an authenticated user" do
       context "when question belongs to current user" do
-        let(:question) { create(:question, user: user, tag_list: "test,west,east") }
+        let(:question) { create(:question, user: user) }
         let(:answer) { create(:answer, question: question, user: user2) }
 
         context "when question has no best answers" do

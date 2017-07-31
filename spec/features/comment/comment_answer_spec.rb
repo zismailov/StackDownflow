@@ -7,7 +7,7 @@ RSpec.feature "Answer Commenting", "
 ", type: :feature do
 
   let(:user) { create(:user) }
-  let(:question) { create(:question, user: user, tag_list: "test,west,best") }
+  let(:question) { create(:question, user: user) }
   let(:answer) { create(:answer, user: user, question: question) }
   let(:comment) { build(:answer_comment, user: user, commentable: answer) }
 

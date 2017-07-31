@@ -3,8 +3,8 @@ require "rails_helper"
 RSpec.feature "Select Best Answer", type: :feature do
   let(:user1) { create(:user) }
   let(:user2) { create(:user) }
-  let(:question1) { create(:question, user: user1, tag_list: "test,west,best") }
-  let(:question2) { create(:question, user: user2, tag_list: "test,west,best") }
+  let(:question1) { create(:question, user: user1) }
+  let(:question2) { create(:question, user: user2) }
   let!(:answer1) { create(:answer, question: question2, user: user1) }
   let!(:answer2) { create(:answer, question: question2, user: user1) }
   let!(:answer3) { create(:answer, question: question1, user: user2) }
