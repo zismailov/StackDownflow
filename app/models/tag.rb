@@ -5,10 +5,6 @@ class Tag < ApplicationRecord
                    uniqueness: { case_sensitive: false },
                    length: { in: 1..24 },
                    format: { with: /\A[a-zA-Z][\w#\+\-\.]*\z/,
-                             message: "can contain only letters, digits, ., +, -, _, and #.
-                              It must begin with a letter." }
-
-  def self.create_from_list(tags)
-    tags.map { |tag| find_by_name(tag) || create(name: tag) }
-  end
+                             message: "can include only: latin letters, digits, ., +, -, _, and #.
+                                       Every tag must begin with a letter." }
 end
