@@ -1,11 +1,10 @@
 AllCops:
+  TargetRubyVersion: 2.4
   Exclude:
     - 'bin/*'
     - 'db/**/*'
     - 'node_modules/**/*'
     - 'vendor/**/*'
-  TargetRubyVersion: 2.4.1
-
 Style/FrozenStringLiteralComment:
   Enabled: false
 
