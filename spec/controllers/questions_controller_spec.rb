@@ -96,34 +96,6 @@ RSpec.describe QuestionsController, type: :controller do
     end
   end
 
-  describe "#edit" do
-    let(:get_edit) do
-      get :edit, params: { id: question.id }, format: :js
-    end
-
-    context "as an authorized user" do
-      context "when question doesn't belong to current user" do
-        let(:question) { question2 }
-        before do
-          sign_in user
-          get_edit
-        end
-
-        it "redirects to root page" do
-          expect(response).to redirect_to root_path
-        end
-      end
-    end
-
-    context "as an guest user" do
-      before { get_edit }
-
-      it "returns 401 error" do
-        expect(response.status).to eq 401
-      end
-    end
-  end
-
   describe "#update" do
     let(:edited_question) do
       edited = question.dup
@@ -149,6 +121,10 @@ RSpec.describe QuestionsController, type: :controller do
           it "changes question's attribute" do
             expect(question.reload.title).to eq edited_question.title
           end
+
+          it "return 200 status" do
+            expect(response.status).to eq 200
+          end
         end
 
         context "with invalid data" do
@@ -160,6 +136,10 @@ RSpec.describe QuestionsController, type: :controller do
 
           it "doesn't change question's attribute" do
             expect(question.reload.title).not_to eq edited_question.title
+          end
+
+          it "returns 422 status" do
+            expect(response.status).to eq 422
           end
         end
       end

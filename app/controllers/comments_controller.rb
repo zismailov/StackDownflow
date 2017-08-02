@@ -4,7 +4,7 @@ class CommentsController < ApplicationController
   before_action :set_comment, only: [:edit, :update, :destroy]
   before_action :comment_belongs_to_current_user?, only: [:edit, :update, :destroy]
 
-  respond_to :json, only: [:create, :update]
+  respond_to :json, only: [:create, :update, :destroy]
 
   def create
     @comment = @commentable.comments.new(comment_params)
@@ -19,8 +19,6 @@ class CommentsController < ApplicationController
     end
   end
 
-  def edit; end
-
   def update
     if @comment.update(comment_params)
       flash.now[:success] = "Comment is edited!"
@@ -34,6 +32,7 @@ class CommentsController < ApplicationController
   def destroy
     @comment.destroy
     flash.now[:success] = "Comment is deleted!"
+    respond_with :nothing, status: 204
   end
 
   private

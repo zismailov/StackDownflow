@@ -51,34 +51,6 @@ RSpec.describe CommentsController, type: :controller do
     end
   end
 
-  describe "#edit" do
-    let(:get_edit) do
-      get :edit, params: { question_id: question.id, id: comment.id }, format: :js
-    end
-
-    context "as an authenticated user" do
-      context "when comment doesn't belong to current user" do
-        let(:comment) { create(:question_comment, user: user2, commentable: question) }
-        before do
-          sign_in user
-          get_edit
-        end
-
-        it "returns 403 error code" do
-          expect(response.status).to eq 403
-        end
-      end
-    end
-
-    context "as an guest user" do
-      before { get_edit }
-
-      it "returns 401 error" do
-        expect(response.status).to eq 401
-      end
-    end
-  end
-
   describe "#update" do
     let(:attributes) { attributes_for(:question_comment, body: comment.body.reverse) }
     let(:put_update) do
@@ -143,7 +115,7 @@ RSpec.describe CommentsController, type: :controller do
 
   describe "#destroy" do
     let(:delete_destroy) do
-      delete :destroy, params: { question_id: question.id, id: comment.id }, format: :js
+      delete :destroy, params: { question_id: question.id, id: comment.id }, format: :json
     end
 
     context "as an authenticated user" do
@@ -153,11 +125,10 @@ RSpec.describe CommentsController, type: :controller do
           expect { delete_destroy }.to change(Comment, :count).by(-1)
         end
 
-        # it "redirects to question page" do
-        #   delete_destroy
-        #   expect(response).to redirect_to question_path(question)
-        #   expect(response).to render_template :destroy
-        # end
+        it "returns 204 status" do
+          delete_destroy
+          expect(response.status).to eq 204
+        end
       end
 
       context "when comment doesn't belong to current user" do

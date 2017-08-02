@@ -1,5 +1,0 @@
-<% if @answer.errors.any? %>
-  Underflow.question.renderAnswerForm("<%= j render 'answers/form' %>")
-<% else %>
-  Underflow.question.addAnswer("<%= j render @answer, best_answer: @answer.question.best_answer? %>")
-<% end %>

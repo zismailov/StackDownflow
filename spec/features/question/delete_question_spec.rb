@@ -18,6 +18,8 @@ RSpec.feature "Delete Question", type: :feature do
       click_on "delete-question"
     end
 
+    expect(current_path).to match %r{\A\/\z}
+
     expect(page).to have_selector ".alert-success", text: "deleted"
     expect(page).not_to have_content question1.body
   end
