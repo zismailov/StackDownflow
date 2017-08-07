@@ -4,6 +4,7 @@ RSpec.feature "Vote for question", type: :feature do
   let(:user1) { create(:user) }
   let(:user2) { create(:user) }
   let(:question) { create(:question, user: user1) }
+  let(:question2) { create(:question, user: user2) }
 
   background do
     sign_in user2
@@ -23,6 +24,13 @@ RSpec.feature "Vote for question", type: :feature do
       expect(page).to have_selector ".votes", text: "0"
       find("a.vote-down").click
       expect(page).to have_selector ".votes", text: "-1"
+    end
+  end
+
+  scenario "User can't vote for his question" do
+    visit question_path(question2)
+    within ".question" do
+      expect(page).not_to have_selector ".voting"
     end
   end
 end
