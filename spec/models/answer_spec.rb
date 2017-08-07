@@ -6,6 +6,7 @@ RSpec.describe Answer, type: :model do
     it { should belong_to :user }
     it { should have_many :comments }
     it { should have_many :attachments }
+    it { should have_many :votes }
     it { should accept_nested_attributes_for :attachments }
   end
 
@@ -15,10 +16,11 @@ RSpec.describe Answer, type: :model do
   end
 
   describe "instance methods" do
-    describe "#mark_best!" do
-      let(:question) { create(:question) }
-      let!(:answer) { create(:answer, question: question) }
+    let(:user) { create(:user) }
+    let(:question) { create(:question, user: user) }
+    let!(:answer) { create(:answer, question: question) }
 
+    describe "#mark_best!" do
       context "when question has no best answer" do
         it "marks answer as best" do
           answer.mark_best!
@@ -33,6 +35,24 @@ RSpec.describe Answer, type: :model do
           answer.mark_best!
           expect(answer).not_to be_best
         end
+      end
+    end
+
+    describe "#total_votes" do
+      it "returns total votes for the answer" do
+        expect(answer.total_votes).to eq 0
+      end
+    end
+
+    describe "#vote_up" do
+      it "increases answer's votes number" do
+        expect { answer.vote_up(user) }.to change(answer, :total_votes).by(1)
+      end
+    end
+
+    describe "#vote_up" do
+      it "decreases answer's votes number" do
+        expect { answer.vote_down(user) }.to change(answer, :total_votes).by(-1)
       end
     end
   end
