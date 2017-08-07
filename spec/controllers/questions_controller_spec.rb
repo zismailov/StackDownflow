@@ -236,4 +236,116 @@ RSpec.describe QuestionsController, type: :controller do
       end
     end
   end
+
+  describe "#vote" do
+    let(:patch_vote_up) do
+      patch :vote, params: { id: question2, vote: :up }, format: :json
+      question2.reload
+    end
+    let(:patch_vote_down) do
+      patch :vote, params: { id: question2, vote: :down }, format: :json
+      question2.reload
+    end
+
+    context "as an authorized user" do
+      context "when question doesn't belong to current user" do
+        context "when voting up" do
+          it "increases question's votes" do
+            sign_in user
+            expect { patch_vote_up }.to change(question2, :votes).by(1)
+          end
+
+          it "sets question's votes" do
+            sign_in user
+            patch_vote_up
+            expect(question2.votes).to eq 1
+          end
+
+          it "returns status 200" do
+            sign_in user
+            patch_vote_up
+            expect(response.status).to eq 200
+          end
+
+          it "returns votes" do
+            sign_in user
+            patch_vote_up
+            expect(response.body).to include "votes"
+          end
+        end
+
+        context "when voting down" do
+          it "decreases question's votes" do
+            sign_in user
+            expect { patch_vote_down }.to change(question2, :votes).by(-1)
+          end
+
+          it "sets question's votes" do
+            sign_in user
+            patch_vote_down
+            expect(question2.reload.votes).to eq(-1)
+          end
+
+          it "returns status 200" do
+            sign_in user
+            patch_vote_down
+            expect(response.status).to eq 200
+          end
+
+          it "returns votes" do
+            sign_in user
+            patch_vote_down
+            expect(response.body).to include "votes"
+          end
+        end
+      end
+
+      context "when question belongs to current user" do
+        context "when voting up" do
+          let(:patch_vote_up) do
+            post :vote, params: { id: question, vote: :down }, format: :json
+          end
+
+          it "doesn't increase question's votes" do
+            sign_in user
+            expect { patch_vote_up }.not_to change(question, :votes)
+          end
+
+          it "returns status 501" do
+            sign_in user
+            patch_vote_up
+            expect(response.status).to eq 501
+          end
+        end
+
+        context "when voting down" do
+          let(:patch_vote_down) do
+            post :vote, params: { id: question, vote: :down }, format: :json
+          end
+
+          it "doesn't increase question's votes" do
+            sign_in user
+            expect { patch_vote_down }.not_to change(question, :votes)
+          end
+
+          it "returns status 501" do
+            sign_in user
+            patch_vote_down
+            expect(response.status).to eq 501
+          end
+        end
+      end
+    end
+
+    context "as an guest user" do
+      it "doesn't increase question's votes" do
+        expect { patch_vote_up }.not_to change(question2, :votes)
+      end
+
+      it "returns 401 status code" do
+        patch_vote_up
+        expect(response.status).to eq 401
+      end
+    end
+  end
 end
