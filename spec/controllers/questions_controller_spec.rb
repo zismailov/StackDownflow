@@ -171,6 +171,9 @@ RSpec.describe QuestionsController, type: :controller do
   end
 
   describe "#destroy" do
+    let!(:answer) { create(:answer, question: question) }
+    let!(:comment) { create(:question_comment, commentable: question) }
+
     let!(:user) { create(:user) }
     let!(:question) { create(:question, user: user) }
 
@@ -183,6 +186,20 @@ RSpec.describe QuestionsController, type: :controller do
         expect {
           delete :destroy, params: { id: question.id }
         }.to change(user.questions, :count).by(-1)
+      end
+
+      it "removes answers for the question" do
+        sign_in user
+        expect {
+          delete :destroy, params: { id: question.id }
+        }.to change(Answer, :count).by(-1)
+      end
+
+      it "removes comments to the question" do
+        sign_in user
+        expect {
+          delete :destroy, params: { id: question.id }
+        }.to change(Comment, :count).by(-1)
       end
     end
 

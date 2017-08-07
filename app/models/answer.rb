@@ -1,8 +1,8 @@
 class Answer < ApplicationRecord
   belongs_to :question
   belongs_to :user
-  has_many :comments, as: :commentable
-  has_many :attachments, as: :attachable
+  has_many :comments, as: :commentable, dependent: :destroy
+  has_many :attachments, as: :attachable, dependent: :destroy
   accepts_nested_attributes_for :attachments
 
   validates :body, presence: true, length: { in: 10..5000 }
