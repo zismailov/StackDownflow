@@ -27,6 +27,11 @@ class Question < ApplicationRecord
     save!
   end
 
+  def vote_down
+    decrement(:votes)
+    save!
+  end
+
   private
 
   # rubocop:disable Metrics/AbcSize
