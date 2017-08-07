@@ -3,6 +3,7 @@ FactoryGirl.define do
     title "Title"
     body { Faker::Lorem.paragraph }
     tag_list "windows,c++,c#,macosx,android-7.0"
+    votes 0
     user
 
     factory :invalid_question do
