@@ -12,7 +12,7 @@ class Question < ApplicationRecord
 
   validates :body, presence: true, length: { in: 10..5000 }
   validates :title, presence: true, length: { in: 5..512 }
-  validates :tag_list, presence: true
+  validates :tag_list, presence: true, on: :create
 
   def best_answer?
     answers.find_by(best: true) ? true : false
@@ -20,6 +20,11 @@ class Question < ApplicationRecord
 
   def form_tag_list
     tags.map(&:name).join(",")
+  end
+
+  def vote_up
+    increment(:votes)
+    save!
   end
 
   private
