@@ -1,10 +1,9 @@
 class QuestionsController < ApplicationController
   before_action :authenticate_user!, except: [:index, :show]
-  before_action :set_question, only: [:show, :edit, :update, :destroy, :vote]
+  before_action :set_question, only: [:show, :edit, :update, :destroy]
   before_action :question_belongs_to_current_user?, only: [:edit, :update, :destroy]
-  before_action :question_doesnt_belong_to_current_user?, only: [:vote]
 
-  respond_to :json, only: [:update, :vote]
+  respond_to :json, only: [:update]
 
   def index
     @questions = Question.all.order("created_at DESC")
@@ -50,18 +49,6 @@ class QuestionsController < ApplicationController
     redirect_to root_path
   end
 
-  def vote
-    if params[:vote] == "up"
-      @question.vote_up
-      render json: { votes: @question.votes }, status: 200
-    elsif params[:vote] == "down"
-      @question.vote_down
-      render json: { votes: @question.votes }, status: 200
-    else
-      render json: :nothing, status: 501
-    end
-  end
-
   private
 
   def question_params
@@ -74,9 +61,5 @@ class QuestionsController < ApplicationController
 
   def question_belongs_to_current_user?
     redirect_to root_path unless @question.user == current_user
-  end
-
-  def question_doesnt_belong_to_current_user?
-    respond_with nil, status: 501, location: nil if @question.user == current_user
   end
 end
