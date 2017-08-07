@@ -30,7 +30,8 @@ RSpec.feature "Vote for question", type: :feature do
   scenario "User can't vote for his question" do
     visit question_path(question2)
     within ".question" do
-      expect(page).not_to have_selector ".voting"
+      expect(page).not_to have_selector "a.vote-up"
+      expect(page).not_to have_selector "a.vote-down"
     end
   end
 end
