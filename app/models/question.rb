@@ -35,6 +35,10 @@ class Question < ApplicationRecord
     votes.inject(0) { |s, v| s + v.vote }
   end
 
+  def voted_by?(user)
+    votes.find_by_user_id(user) ? true : false
+  end
+
   private
 
   # rubocop:disable Metrics/AbcSize
