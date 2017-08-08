@@ -34,4 +34,14 @@ RSpec.feature "Vote for answer", type: :feature do
       expect(page).not_to have_selector "a.vote-down"
     end
   end
+
+  scenario "User can vote only once", js: true do
+    within "#answer_#{answer1.id} .voting" do
+      expect(page).to have_selector ".votes", text: "0"
+      find("a.vote-down").click
+      expect(page).to have_selector ".votes", text: "-1"
+      expect(page).not_to have_selector "a.vote-up"
+      expect(page).not_to have_selector "a.vote-down"
+    end
+  end
 end
