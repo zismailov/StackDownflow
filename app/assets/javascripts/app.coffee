@@ -198,6 +198,8 @@ class Answer
   constructor: (@answer_id) ->
     this.$el = $("#" + this.answer_id);
     this.$body = this.$el.find(".answer-body")
+    this.$voting = this.$el.find(".voting")
+    this.$votes = this.$voting.find(".votes")
     this.$commentBtn = this.$el.find(".comment-answer")
     this.$commentForm = this.$el.find(".comment-answer-form")
     this.$commentsWrapper = this.$el.find(".comments-wrapper")
@@ -234,6 +236,12 @@ class Answer
 
     this.$commentsWrapper.on "ajax:success", "a.delete-comment", (e, xhr, status) ->
       that.removeComment($(this).data("id"))
+
+    this.$voting.on "ajax:success", "a.vote-up", (e, data, status, xhr) ->
+      that.$votes.text(xhr.responseJSON.votes)
+
+    this.$voting.on "ajax:success", "a.vote-down", (e, data, status, xhr) ->
+      that.$votes.text(xhr.responseJSON.votes)
 
   renderFormErrors: (form, response) ->
     $form = $(form)
