@@ -39,6 +39,7 @@ class Question
 
     this.bind()
     this.setAjaxHooks()
+    this.subscribeToAnswers()
 
   bind: () ->
     that = this
@@ -98,6 +99,11 @@ class Question
       $(this).remove()
       that.$voting.find("a.vote-up").remove()
 
+  subscribeToAnswers: () ->
+    that = this
+    PrivatePub.subscribe "/questions/#{this.id}/answers", (data, channel) ->
+      that.addAnswer($.parseJSON(data.answer))
+
   edit: (form) ->
     this.$body.html(form)
 
@@ -136,11 +142,12 @@ class Question
     this.$commentForm.find(".has-error").removeClass("has-error").find(".help-block").remove()
 
   addAnswer: (answer) ->
-    this.$answers.append(HandlebarsTemplates["answer"](answer))
-    this.increaseAnswersCounter()
-    this.answers.push(new Answer("answer_#{$(answer).attr("id")}"))
-    this.answers[this.answers.length-1].comments = []
-    this.clearAnswerForm()
+    unless this.answerById(answer.id)
+      this.$answers.append(HandlebarsTemplates["answer"](answer))
+      this.increaseAnswersCounter()
+      this.answers.push(new Answer("answer_#{$(answer).attr("id")}"))
+      this.answers[this.answers.length-1].comments = []
+      this.clearAnswerForm()
 
   renderFormErrors: (form, response) ->
     this.clearFormErrors(form)

@@ -24,6 +24,9 @@ gem "devise"
 gem "handlebars_assets"
 gem "remotipart"
 
+gem "private_pub"
+gem "thin"
+
 group :test do
   gem "capybara"
   gem "database_cleaner"

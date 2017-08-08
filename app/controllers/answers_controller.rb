@@ -13,6 +13,8 @@ class AnswersController < ApplicationController
     @comment = Comment.new
     if @answer.save
       flash.now[:success] = "Answer is created!"
+      PrivatePub.publish_to "/questions/#{@answer.question.id}/answers",
+                            answer: AnswerSerializer.new(@answer, root: false).to_json
       respond_with @answer, location: nil, root: false
     else
       flash.now[:danger] = "Answer is not created! See errors below."
