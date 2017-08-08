@@ -13,11 +13,11 @@ class Answer < ApplicationRecord
   end
 
   def vote_up(user)
-    votes.create(user_id: user.id, vote: 1)
+    votes.create(user_id: user.id, vote: 1) unless voted_by? user
   end
 
   def vote_down(user)
-    votes.create(user_id: user.id, vote: -1)
+    votes.create(user_id: user.id, vote: -1) unless voted_by? user
   end
 
   def total_votes
