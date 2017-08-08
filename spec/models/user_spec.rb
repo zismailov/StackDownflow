@@ -4,7 +4,8 @@ RSpec.describe User, type: :model do
   describe "associations" do
     it { should have_many :questions }
     it { should have_many :answers }
-    it { is_expected.to have_many :comments }
+    it { should have_many :comments }
+    it { should have_many :votes }
   end
 
   describe "validations" do
