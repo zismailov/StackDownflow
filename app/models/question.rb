@@ -7,13 +7,9 @@ class Question < ApplicationRecord
 
   belongs_to :user
   has_and_belongs_to_many :tags do
-    def add(tag = "")
-      new_tag = Tag.find_or_create_by(name: tag)
+    def add(tag)
+      new_tag = Tag.find_or_create_by(name: tag) if tag.present?
       push new_tag
-    end
-
-    def remove(tag = "")
-      find_by_name(tag).destroy
     end
   end
   has_many :answers, dependent: :destroy
@@ -39,8 +35,9 @@ class Question < ApplicationRecord
   def validate_tag_list
     split_tags(tag_list) do |tag|
       tag = Tag.find_or_initialize_by(name: tag)
-      if tag.valid? == false && tag.errors[:name].any?
+      if tag.new_record? && !tag.valid?
         errors[:tag_list] << "Tags #{tag.errors[:name][0]}"
+        break
       end
     end
   end
@@ -53,6 +50,7 @@ class Question < ApplicationRecord
   end
 
   def split_tags(list, &block)
-    list.split(",").each(&block) if list.present?
+    list ||= ""
+    list.split(",").each(&block)
   end
 end
