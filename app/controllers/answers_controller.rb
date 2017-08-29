@@ -11,8 +11,8 @@ class AnswersController < ApplicationController
     @comment = Comment.new
     if @answer.save
       flash.now[:success] = "Answer is created!"
-      PrivatePub.publish_to "/questions/#{@answer.question.id}/answers",
-                            create: AnswerSerializer.new(@answer, root: false).to_json
+      PrivatePub.publish_to "/questions/#{@answer.question.id}",
+                            answer_create: AnswerSerializer.new(@answer, root: false).to_json
       render json: @answer, root: false, status: 201
     else
       flash.now[:danger] = "Answer is not created! See errors below."
@@ -34,7 +34,7 @@ class AnswersController < ApplicationController
     @answer_id = @answer.id
     @answer.destroy
     flash.now[:success] = "Answer is deleted!"
-    PrivatePub.publish_to "/questions/#{@answer.question.id}/answers", destroy: @answer.id
+    PrivatePub.publish_to "/questions/#{@answer.question.id}", answer_destroy: @answer.id
     render json: :nothing, status: 204
   end
 
