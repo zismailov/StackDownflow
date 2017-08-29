@@ -5,6 +5,8 @@ class AnswersController < ApplicationController
   before_action :answer_belongs_to_current_user?, only: [:edit, :update, :destroy]
   before_action :question_belongs_to_current_user?, only: [:mark_best]
 
+  # rubocop:disable Metrics/AbcSize
+  # rubocop:disable Metrics/MethodLength
   def create
     @answer = @question.answers.new(answer_params)
     @answer.user = current_user

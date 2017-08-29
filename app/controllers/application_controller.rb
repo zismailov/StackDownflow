@@ -14,6 +14,7 @@ class ApplicationController < ActionController::Base
     @parent = resource.singularize.classify.constantize.find(id)
   end
 
+  # rubocop:disable Metrics/AbcSize
   def update_resource(resource)
     if resource.update(send(:"#{resource.class.to_s.downcase}_params"))
       flash.now[:success] = "#{resource.class} is edited!"
