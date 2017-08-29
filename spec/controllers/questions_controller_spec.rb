@@ -173,6 +173,7 @@ RSpec.describe QuestionsController, type: :controller do
   describe "#destroy" do
     let!(:answer) { create(:answer, question: question) }
     let!(:comment) { create(:question_comment, commentable: question) }
+    let!(:vote) { create(:vote, votable: question, user: user2) }
 
     let!(:user) { create(:user) }
     let!(:question) { create(:question, user: user) }
@@ -200,6 +201,12 @@ RSpec.describe QuestionsController, type: :controller do
         expect {
           delete :destroy, params: { id: question.id }
         }.to change(Comment, :count).by(-1)
+      end
+
+      it "removes relating votes" do
+        expect {
+          delete :destroy, params: { id: question.id }
+        }.to change(Vote, :count).by(-1)
       end
     end
 
