@@ -20,4 +20,8 @@ module Votable
   def voted_by?(user)
     votes.find_by_user_id(user) ? true : false
   end
+
+  def user_voted(user)
+    votes.find_by_user_id(user).vote if voted_by?(user)
+  end
 end
