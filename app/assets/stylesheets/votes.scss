@@ -1,0 +1,38 @@
+.voting,
+.voting * {
+  display: block;
+  text-align: center;
+}
+
+.voting .votes {
+  margin-top: 13px;
+}
+
+.voting .vote-up + .votes,
+.voting .voted-up + .votes {
+  margin-top: 0;
+}
+
+.voting .vote-up {
+  background-image: asset-url('vote_arrows.png') center 0 no-repeat;
+  display: block;
+  height: 13px;
+}
+
+.voting .vote-down {
+  background-image: asset-url('vote_arrows.png') center -13px no-repeat;
+  display: block;
+  height: 13px;
+}
+
+.voting .voted-up {
+  background-image: asset-url('vote_arrows.png') center -26px no-repeat;
+  display: block;
+  height: 13px;
+}
+
+.voting .voted-down {
+  background: url(image_path("vote_arrows.png")) center -39px no-repeat;
+  display: block;
+  height: 13px;
+}
