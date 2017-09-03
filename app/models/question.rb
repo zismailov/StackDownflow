@@ -1,7 +1,8 @@
 class Question < ApplicationRecord
   include Votable
-
   attr_accessor :tag_list
+
+  scope :where_tag, ->(tag) { joins(:tags).where("tags.name = ?", tag) }
 
   after_save :add_tags_from_list
 
