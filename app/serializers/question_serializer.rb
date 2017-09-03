@@ -1,3 +1,16 @@
+# == Schema Information
+#
+# Table name: questions
+#
+#  id         :integer          not null, primary key
+#  title      :string
+#  body       :text
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#  user_id    :integer
+#  votes      :integer          default(0), not null
+#
+
 class QuestionSerializer < ActiveModel::Serializer
   attributes :id, :title, :body, :answers, :files, :tags, :list_of_tags
 

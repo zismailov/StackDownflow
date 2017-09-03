@@ -1,3 +1,16 @@
+# == Schema Information
+#
+# Table name: comments
+#
+#  id               :integer          not null, primary key
+#  body             :text
+#  commentable_id   :integer
+#  commentable_type :string
+#  user_id          :integer
+#  created_at       :datetime         not null
+#  updated_at       :datetime         not null
+#
+
 class CommentSerializer < ActiveModel::Serializer
   include ActionView::Helpers::DateHelper
   attributes :id, :body, :user, :commentable, :author, :commentable_id, :created, :edited, :total_votes
