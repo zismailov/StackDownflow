@@ -156,6 +156,7 @@ RSpec.describe AnswersController, type: :controller do
         end
 
         it "removes relating votes" do
+          sign_in user
           expect { delete_destroy }.to change(Vote, :count).by(-1)
         end
 

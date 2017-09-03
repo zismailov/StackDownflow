@@ -19,6 +19,8 @@ class VotesController < ApplicationController
     render json: :nothing, status: 403 if @parent.user == current_user
   end
 
+  # rubocop:disable LineLength
+  # rubocop:disable Metrics/AbcSize
   def publish_and_return_votes
     question_id = case @parent.class.name
                   when "Question" then @parent.id

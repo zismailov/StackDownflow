@@ -204,6 +204,7 @@ RSpec.describe QuestionsController, type: :controller do
       end
 
       it "removes relating votes" do
+        sign_in user
         expect {
           delete :destroy, params: { id: question.id }
         }.to change(Vote, :count).by(-1)

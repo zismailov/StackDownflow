@@ -25,7 +25,7 @@ Style/BlockDelimiters:
 
 Metrics/ModuleLength:
   Exclude:
-  - "**/*_spec.rb"
+    - "**/*_spec.rb"
 
 Metrics/BlockLength:
   Exclude:

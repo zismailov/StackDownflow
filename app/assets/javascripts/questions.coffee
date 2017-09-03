@@ -33,7 +33,7 @@ class @Question
   bind: () ->
     that = this
 
-    this.$commentBtn.click((e) ->
+    this.$commentBtn.click (e) ->
       e.preventDefault()
       that.toggleCommentForm()
 

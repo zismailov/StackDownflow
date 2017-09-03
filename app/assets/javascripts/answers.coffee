@@ -9,7 +9,7 @@ class @Answer
     this.$commentsWrapper = this.$el.find(".comments-wrapper")
     this.$comments = this.$commentsWrapper.find(".comments")
     this.comments = []
-    this.id = parseInt(answer_id.split("_")[1])
+    this.id = parseInt(this.answer_id.split("_")[1])
 
     this.binds()
     this.setAjaxHooks()
@@ -17,7 +17,7 @@ class @Answer
   binds: () ->
     that = this
 
-    this.$commentBtn.click((e) ->
+    this.$commentBtn.click (e) ->
       e.preventDefault()
       that.toggleCommentForm()
 
@@ -29,10 +29,10 @@ class @Answer
       that.$body.hide()
       that.$body.after(HandlebarsTemplates["edit_answer"]({id: that.id, body: that.$body.text(), question_id: Underflow.question.id}))
 
-      this.$el.on "click", ".cancel-editing", (e) ->
-        e.preventDefault()
-        that.$body.siblings(".edit-form").remove()
-        that.$body.show()
+    this.$el.on "click", ".cancel-editing", (e) ->
+      e.preventDefault()
+      that.$body.siblings(".edit-form").remove()
+      that.$body.show()
 
 
   setAjaxHooks: () ->

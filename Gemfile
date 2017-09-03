@@ -24,6 +24,7 @@ gem "devise"
 gem "handlebars_assets"
 gem "remotipart"
 
+gem "cocoon"
 gem "private_pub"
 gem "thin"
 

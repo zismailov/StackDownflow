@@ -15,7 +15,8 @@ class Question < ApplicationRecord
   has_many :answers, dependent: :destroy
   has_many :comments, as: :commentable, dependent: :destroy
   has_many :attachments, as: :attachable, dependent: :destroy
-  accepts_nested_attributes_for :attachments
+  accepts_nested_attributes_for :attachments,
+                                reject_if: proc { |attrs| attrs["file"].blank? && attrs["file_cache"].blank? }
 
   validates :body, presence: true, length: { in: 10..5000 }
   validates :title, presence: true, length: { in: 5..512 }

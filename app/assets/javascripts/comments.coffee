@@ -4,7 +4,7 @@ class @Comment
     this.$body = this.$el.find(".comment-body")
     this.$voting = this.$el.find(".voting")
     this.$votes = this.$voting.find(".votes")
-    this.id = parseInt(commentId.split("_")[1], 10)
+    this.id = parseInt(this.commentId.split("_")[1], 10)
 
     this.binds()
     this.setAjaxHooks()

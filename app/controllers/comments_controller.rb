@@ -1,5 +1,6 @@
 class CommentsController < ApplicationController
   before_action :authenticate_user!
+  before_action :find_parent
   before_action :set_comment, only: [:edit, :update, :destroy]
   before_action :comment_belongs_to_current_user?, only: [:edit, :update, :destroy]
   after_action :publish_after_destroy, only: [:destroy]
