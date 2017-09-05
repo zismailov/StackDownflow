@@ -13,6 +13,6 @@
 FactoryGirl.define do
   factory :attachment do
     file "image.png"
-    question_id 1
+    association :attachable
   end
 end
