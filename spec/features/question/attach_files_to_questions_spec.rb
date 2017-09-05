@@ -14,7 +14,7 @@ RSpec.feature "Attach File to Question", type: :feature do
     fill_in "Title", with: question.title
     fill_in "Body", with: question.body
     fill_in "Tags", with: tags.map(&:name).join(",")
-    attach_file("File", "#{Rails.root}/spec/fixtures/cover_image.png")
+    all(".new_question input[type='file']")[0].set("#{Rails.root}/spec/fixtures/cover_image.png")
     click_on "Create Question"
 
     expect(current_path).to match %r{\/questions\/\d+\z} # /\/questions\/\d+\z/
@@ -32,7 +32,6 @@ RSpec.feature "Attach File to Question", type: :feature do
     fill_in "Title", with: question.title
     fill_in "Body", with: question.body
     page.execute_script("$('#question_tag_list').val('#{tags.map(&:name).join(',')}')")
-    # attach_file("File", "#{Rails.root}/spec/fixtures/cover_image.png")
     all(".new_question input[type='file']")[0].set("#{Rails.root}/spec/fixtures/cover_image.png")
 
     click_link "Add file"
