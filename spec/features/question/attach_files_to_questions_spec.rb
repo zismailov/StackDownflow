@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.feature "Attach File to Question", type: :feature do
   let(:user) { create(:user) }
   let(:tags) { build_list(:tag, 5) }
-  let(:question) { build(:question, tags: tags) }
+  let(:question) { build(:question, tags: tags, user: user) }
 
   background do
     sign_in user
@@ -78,8 +78,21 @@ RSpec.feature "Attach File to Question", type: :feature do
     click_on "Create Question"
 
     within(".question .question-attachments") do
-      click_link "Delete"
+      find(".delete-attachment").click
     end
     expect(page).not_to have_link "cover_image.png"
+  end
+
+  scenario "User attaches a file while editing a question", js: true do
+    question.save
+    visit question_path(question)
+
+    within(".question") do
+      click_link "edit-question"
+      all("input[type='file']")[0].set("#{Rails.root}/spec/fixtures/cover_image.png")
+      click_button "Update Question"
+
+      expect(page).to have_content "cover_image.png"
+    end
   end
 end
