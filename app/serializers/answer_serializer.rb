@@ -40,7 +40,11 @@ class AnswerSerializer < ActiveModel::Serializer
 
   def attachments
     if object.attachments.any?
-      object.attachments.map { |attachment| { file: File.basename(attachment.file.url), url: attachment.file.url } }
+      object.attachments.map do |attachment|
+        { file: File.basename(attachment.file.url),
+          url: attachment.file.url,
+          id: attachment.id }
+      end
     else
       false
     end

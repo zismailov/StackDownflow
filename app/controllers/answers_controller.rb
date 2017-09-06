@@ -4,6 +4,7 @@ class AnswersController < ApplicationController
   before_action :set_answer, except: :create
   before_action :answer_belongs_to_current_user?, only: [:edit, :update, :destroy]
   before_action :question_belongs_to_current_user?, only: [:mark_best]
+  before_action :add_user_id_to_attachments, only: [:create, :update]
 
   # rubocop:disable Metrics/AbcSize
   # rubocop:disable Metrics/MethodLength
@@ -49,7 +50,7 @@ class AnswersController < ApplicationController
   private
 
   def answer_params
-    params.require(:answer).permit(:body, attachments_attributes: [:file, :file_cache])
+    params.require(:answer).permit(:body, attachments_attributes: [:file, :file_cache, :user_id])
   end
 
   def set_answer
@@ -66,5 +67,11 @@ class AnswersController < ApplicationController
 
   def question_belongs_to_current_user?
     redirect_to @answer.question unless @answer.question.user == current_user
+  end
+
+  def add_user_id_to_attachments
+    params[:answer][:attachments_attributes]&.each do |_k, v|
+      v[:user_id] = current_user.id
+    end
   end
 end

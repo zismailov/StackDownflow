@@ -15,6 +15,6 @@ class AttachmentsController < ApplicationController
   end
 
   def attachment_belongs_to_current_user?
-    redirect_to root_path unless @attachment.user == current_user
+    render json: :nothing, status: 401 unless @attachment.user == current_user
   end
 end

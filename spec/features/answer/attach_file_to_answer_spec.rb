@@ -38,6 +38,17 @@ RSpec.feature "Attach File to Answer", type: :feature do
     expect(page).to have_link "Gemfile"
   end
 
+  scenario "User deletes attached file", js: true do
+    fill_in :answer_body, with: answer.body
+    all("#answer-form input[type='file']")[0].set("#{Rails.root}/spec/fixtures/cover_image.png")
+    click_on "Answer"
+
+    within(".answer .answer-attachments") do
+      click_link "Delete"
+    end
+    expect(page).not_to have_link "cover_image.png"
+  end
+
   # scenario "User uploads file after a failing validation", js: true do
   # all("#answer-form input[type='file']")[0].set("#{Rails.root}/spec/fixtures/cover_image.png")
   # click_on "Answer"
