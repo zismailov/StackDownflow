@@ -27,6 +27,7 @@ RSpec.describe User, type: :model do
     it { should have_many :comments }
     it { should have_many :votes }
     it { should have_many :attachments }
+    it { should have_many :impressions }
   end
 
   describe "validations" do
