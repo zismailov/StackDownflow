@@ -13,12 +13,19 @@ class QuestionsController < ApplicationController
     @attachment = @question.attachments.build
   end
 
+  # rubocop:disable Metrics/AbcSize
   def show
     @answers = @question.answers.order("best DESC, created_at")
     @comments = @question.comments.order("created_at")
     @comment = Comment.new
     @answer = Answer.new
     @attachment = @answer.attachments.build
+
+    if @question.impressions.where(remote_ip: request.remote_ip,
+                                   user_agent: (request.user_agent || "no user_agent")).empty?
+      @question.impressions.create(remote_ip: request.remote_ip,
+                                   user_agent: (request.user_agent || "no user_agent"))
+    end
   end
 
   def create
