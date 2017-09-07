@@ -19,7 +19,12 @@ class QuestionSerializer < ActiveModel::Serializer
   end
 
   def files
-    object.attachments.map { |a| { url: a.file.url, filename: a.file.file.filename, id: a.id } }
+    object.attachments.map do |a|
+      { url: a.file.url,
+        filename: a.file.file.filename,
+        id: a.id,
+        attachable: a.attachable.class.to_s.downcase }
+    end
   end
 
   def tags
