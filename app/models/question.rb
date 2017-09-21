@@ -23,6 +23,11 @@ class Question < ApplicationRecord
                     AND votes.votable_type = 'Question'").group("questions.id")
             .order("sum(votes.vote), created_at desc")
   }
+  scope :unanswered, -> {
+                       joins("LEFT JOIN answers
+                              ON answers.question_id = questions.id
+                              WHERE answers.question_id is NULL")
+                     }
 
   after_save :add_tags_from_list
 
