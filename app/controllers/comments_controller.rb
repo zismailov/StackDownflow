@@ -4,25 +4,26 @@ class CommentsController < ApplicationController
   before_action :set_comment, only: [:edit, :update, :destroy]
   before_action :comment_belongs_to_current_user?, only: [:edit, :update, :destroy]
   after_action :publish_after_destroy, only: [:destroy]
+  after_action :publish_after_create, only: [:create]
+
+  respond_to :json
 
   def create
-    @comment = @parent.comments.new(comment_params)
-    @comment.user = current_user
-
-    if @comment.save
-      publish_on_create
-      render json: @comment, status: 201, root: false
-    else
-      render json: @comment.errors, status: :unprocessable_entity
-    end
+    respond_with @comment = @parent.comments.create(comment_params.merge(user_id: current_user.id))
   end
 
   def update
-    update_resource @comment
+    respond_with @comment.update(comment_params) do |format|
+      if @comment.valid?
+        format.json { render json: @comment, status: 200 }
+      else
+        format.json { render json: @comment.errors, status: 422 }
+      end
+    end
   end
 
   def destroy
-    destroy_resource @comment
+    respond_with @comment.destroy
   end
 
   private
@@ -47,7 +48,8 @@ class CommentsController < ApplicationController
                           parent_id: @comment.commentable.id
   end
 
-  def publish_on_create
+  def publish_after_create
+    return unless @comment.valid?
     PrivatePub.publish_to "/questions/#{@parent.class.name == 'Question' ? @parent.id : @parent.question.id}",
                           comment_create: CommentSerializer.new(@comment, root: false).to_json,
                           parent: @parent.class.name,

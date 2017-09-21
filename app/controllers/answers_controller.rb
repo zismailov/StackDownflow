@@ -63,10 +63,9 @@ class AnswersController < ApplicationController
   end
 
   def publish_after_create
-    if @answer.valid?
-      PrivatePub.publish_to "/questions/#{@answer.question.id}",
-                            answer_create: AnswerSerializer.new(@answer, root: false).to_json
-    end
+    return unless @answer.valid?
+    PrivatePub.publish_to "/questions/#{@answer.question.id}",
+                          answer_create: AnswerSerializer.new(@answer, root: false).to_json
   end
 
   def publish_after_destroy
