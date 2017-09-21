@@ -2,7 +2,6 @@ class QuestionsController < ApplicationController
   before_action :authenticate_user!, only: [:create, :new, :update, :destroy]
   before_action :set_question, only: [:show, :edit, :update, :destroy]
   before_action :question_belongs_to_current_user?, only: [:edit, :update, :destroy]
-  before_action :add_user_id_to_attachments, only: [:create, :update]
 
   respond_to :html, except: [:update]
   respond_to :json, only: [:update]
@@ -30,13 +29,7 @@ class QuestionsController < ApplicationController
   end
 
   def update
-    respond_with @question.update(question_params) do |format|
-      if @question.valid?
-        format.json { render json: @question, status: 200 }
-      else
-        format.json { render json: @question.errors, status: 422 }
-      end
-    end
+    update_resource @question
   end
 
   def destroy
@@ -66,11 +59,5 @@ class QuestionsController < ApplicationController
 
   def question_belongs_to_current_user?
     redirect_to root_path unless @question.user == current_user
-  end
-
-  def add_user_id_to_attachments
-    params[:question][:attachments_attributes]&.each do |_k, v|
-      v[:user_id] = current_user.id
-    end
   end
 end

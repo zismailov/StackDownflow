@@ -5,23 +5,15 @@ class AnswersController < ApplicationController
   before_action :answer_belongs_to_current_user?, only: [:edit, :update, :destroy]
   before_action :question_belongs_to_current_user?, only: [:mark_best]
   before_action :add_user_id_to_attachments, only: [:create, :update]
-  after_action :publish_after_create, only: :create
-  after_action :publish_after_destroy, only: :destroy
-  after_action :add_answer_to_current_user, only: :create
+  after_action :publish, only: [:create, :destroy]
 
   def create
     @comment = Comment.new
-    respond_with @answer = @question.answers.create(answer_params)
+    respond_with @answer = @question.answers.create(answer_params.merge(user_id: current_user.id))
   end
 
   def update
-    respond_with @answer.update(answer_params) do |format|
-      if @answer.valid?
-        format.json { render json: @answer, status: 200 }
-      else
-        format.json { render json: @answer.errors, status: 422 }
-      end
-    end
+    update_resource @answer
   end
 
   def destroy
@@ -56,23 +48,15 @@ class AnswersController < ApplicationController
     redirect_to @answer.question unless @answer.question.user == current_user
   end
 
-  def add_user_id_to_attachments
-    params[:answer][:attachments_attributes]&.each do |_k, v|
-      v[:user_id] = current_user.id
+  def publish
+    case params[:action]
+    when "create"
+      if @answer.valid?
+        PrivatePub.publish_to "/questions/#{@answer.question.id}",
+                              answer_create: AnswerSerializer.new(@answer, root: false).to_json
+      end
+    when "destroy"
+      PrivatePub.publish_to "/questions/#{@answer.question.id}", answer_destroy: @answer.id
     end
-  end
-
-  def publish_after_create
-    return unless @answer.valid?
-    PrivatePub.publish_to "/questions/#{@answer.question.id}",
-                          answer_create: AnswerSerializer.new(@answer, root: false).to_json
-  end
-
-  def publish_after_destroy
-    PrivatePub.publish_to "/questions/#{@answer.question.id}", answer_destroy: @answer.id
-  end
-
-  def add_answer_to_current_user
-    current_user.answers << @answer if @answer.valid?
   end
 end
