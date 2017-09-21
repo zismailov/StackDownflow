@@ -28,8 +28,10 @@ class Question < ApplicationRecord
                               ON answers.question_id = questions.id
                               WHERE answers.question_id is NULL")
                      }
+  scope :activity, -> { order("recent_activity DESC") }
 
   after_save :add_tags_from_list
+  before_save :set_recent_activity
 
   belongs_to :user
   has_and_belongs_to_many :tags do
@@ -80,5 +82,9 @@ class Question < ApplicationRecord
   def split_tags(list, &block)
     list ||= ""
     list.split(",").each(&block)
+  end
+
+  def set_recent_activity
+    self.recent_activity = Time.zone.now
   end
 end
