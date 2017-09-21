@@ -5,34 +5,27 @@ class AnswersController < ApplicationController
   before_action :answer_belongs_to_current_user?, only: [:edit, :update, :destroy]
   before_action :question_belongs_to_current_user?, only: [:mark_best]
   before_action :add_user_id_to_attachments, only: [:create, :update]
+  after_action :publish_after_create, only: :create
+  after_action :publish_after_destroy, only: :destroy
+  after_action :add_answer_to_current_user, only: :create
 
-  # rubocop:disable Metrics/AbcSize
   def create
-    @answer = @question.answers.new(answer_params)
-    @answer.user = current_user
     @comment = Comment.new
-    if @answer.save
-      PrivatePub.publish_to "/questions/#{@answer.question.id}",
-                            answer_create: AnswerSerializer.new(@answer, root: false).to_json
-      render json: @answer, root: false, status: 201
-    else
-      render json: @answer.errors.as_json, status: :unprocessable_entity
-    end
+    respond_with @answer = @question.answers.create(answer_params)
   end
 
   def update
-    if @answer.update(answer_params)
-      render json: @answer, root: false, status: 200
-    else
-      flash.now[:danger] = "Answer is not updated! See errors below."
+    respond_with @answer.update(answer_params) do |format|
+      if @answer.valid?
+        format.json { render json: @answer, status: 200 }
+      else
+        format.json { render json: @answer.errors, status: 422 }
+      end
     end
   end
 
   def destroy
-    @answer_id = @answer.id
-    @answer.destroy
-    PrivatePub.publish_to "/questions/#{@answer.question.id}", answer_destroy: @answer.id
-    render json: :nothing, status: 204
+    respond_with @answer.destroy
   end
 
   def mark_best
@@ -67,5 +60,20 @@ class AnswersController < ApplicationController
     params[:answer][:attachments_attributes]&.each do |_k, v|
       v[:user_id] = current_user.id
     end
+  end
+
+  def publish_after_create
+    if @answer.valid?
+      PrivatePub.publish_to "/questions/#{@answer.question.id}",
+                            answer_create: AnswerSerializer.new(@answer, root: false).to_json
+    end
+  end
+
+  def publish_after_destroy
+    PrivatePub.publish_to "/questions/#{@answer.question.id}", answer_destroy: @answer.id
+  end
+
+  def add_answer_to_current_user
+    current_user.answers << @answer if @answer.valid?
   end
 end
