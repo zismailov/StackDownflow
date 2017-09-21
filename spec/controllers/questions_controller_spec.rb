@@ -10,17 +10,37 @@ RSpec.describe QuestionsController, type: :controller do
     let(:questions) { create_list(:question, 2) }
     before { get :index }
 
-    it "returns a list of questions" do
-      expect(Question.all).to eq(questions)
-    end
-
     it "responds successfully" do
       expect(response).to be_success
     end
   end
 
   describe "#show" do
-    before { get :show, params: { id: question.id } }
+    let(:impression) { build(:impression, question: question) }
+    let(:get_show) do
+      get :show, params: { id: question.id }
+    end
+
+    before do
+      request.env["REMOTE_ADDR"] = impression.remote_ip
+      request.env["HTTP_USER_AGENT"] = impression.user_agent
+    end
+
+    context "when visited for the first time" do
+      it "creates a new impression" do
+        expect { get_show }.to change(Impression, :count).by(1)
+      end
+    end
+
+    context "when visited for the second time" do
+      before do
+        impression.save
+      end
+
+      it "doesn't create an impression" do
+        expect { get_show }.not_to change(Impression, :count)
+      end
+    end
 
     it "responds successfully" do
       expect(response).to be_success
@@ -107,7 +127,7 @@ RSpec.describe QuestionsController, type: :controller do
         id: question.id, question: {
           title: edited_question.title, body: question.body, tag_list: question.tag_list
         }
-      }, format: :js
+      }, format: :json
     end
 
     context "as an authorized user" do
@@ -122,7 +142,14 @@ RSpec.describe QuestionsController, type: :controller do
             expect(question.reload.title).to eq edited_question.title
           end
 
-          it "return 200 status" do
+          it "returns question's json" do
+            json = JSON.parse(response.body)
+            expect(json["title"]).to eq edited_question.title
+            expect(json["body"]).to eq edited_question.body
+            expect(json["list_of_tags"]).to eq edited_question.tag_list
+          end
+
+          it "returns 200 status code" do
             expect(response.status).to eq 200
           end
         end
@@ -209,6 +236,12 @@ RSpec.describe QuestionsController, type: :controller do
           delete :destroy, params: { id: question.id }
         }.to change(Vote, :count).by(-1)
       end
+
+      it "redirects to questions path" do
+        sign_in user
+        delete :destroy, params: { id: question.id }
+        expect(response).to redirect_to questions_path
+      end
     end
 
     context "as an unauthorized user" do
@@ -227,6 +260,17 @@ RSpec.describe QuestionsController, type: :controller do
     end
 
     context "as a guest" do
+      it "doesn't delete a question" do
+        expect {
+          delete :destroy, params: { id: question.id }
+        }.not_to change(Question, :count)
+      end
+
+      it "redirects to sign in path" do
+        delete :destroy, params: { id: question.id }
+        expect(response).to redirect_to new_user_session_path
+      end
+
       it "returns a 302 response" do
         delete :destroy, params: { id: question.id }
         expect(response).to have_http_status "302"

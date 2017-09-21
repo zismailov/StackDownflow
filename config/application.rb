@@ -18,12 +18,16 @@ Bundler.require(*Rails.groups)
 
 module StackDownflow
   class Application < Rails::Application
+    # Use the responders controller from the responders gem
+    config.app_generators.scaffold_controller :responders_controller
+
     # Initialize configuration defaults for originally generated Rails version.
     # config.load_defaults 5.1
 
     config.time_zone = "UTC"
     config.active_record.default_timezone = :utc
     config.sass.preferred_syntax = :sass
+    config.responders.flash_keys = [:success, :danger]
 
     config.generators do |g|
       g.template_engine :slim

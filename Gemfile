@@ -26,6 +26,7 @@ gem "remotipart"
 
 gem "cocoon"
 gem "private_pub"
+gem "responders"
 gem "thin"
 
 group :test do
