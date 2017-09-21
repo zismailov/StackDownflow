@@ -16,6 +16,9 @@ Style/SymbolArray:
   Enabled: true
   EnforcedStyle: brackets
 
+Style/Lambda:
+  EnforcedStyle: literal
+
 Metrics/LineLength:
   Max: 120
 

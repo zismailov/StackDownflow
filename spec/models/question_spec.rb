@@ -49,15 +49,31 @@ RSpec.describe Question, type: :model do
     let!(:question2) { create(:question, tag_list: tags[1].name) }
     let!(:question3) { create(:question, tag_list: tags[0].name) }
 
-    context "where questions have a tag" do
-      it "sifts questions by tag name" do
-        expect(Question.where_tag(tags[0].name)).to match_array [question1, question3]
+    describe "where_tag" do
+      context "where questions have a tag" do
+        it "sifts questions by tag name" do
+          expect(Question.where_tag(tags[0].name)).to match_array [question1, question3]
+        end
+      end
+
+      context "where questions don't have a tag" do
+        it "returns an empty array" do
+          expect(Question.where_tag(tags[2].name)).to eq []
+        end
       end
     end
 
-    context "where questions don't have a tag" do
-      it "returns an empty array" do
-        expect(Question.where_tag(tags[2].name)).to eq []
+    describe "by_votes" do
+      let(:users) { create_list(:user, 2) }
+
+      before do
+        question2.vote_up(users[0])
+        question2.vote_up(users[1])
+        question3.vote_up(users[0])
+      end
+
+      it "returns questions sorted by votes" do
+        expect(Question.by_votes).to match_array [question2, question3, question1]
       end
     end
   end
@@ -96,22 +112,6 @@ RSpec.describe Question, type: :model do
       end
     end
 
-    describe "#vote_up" do
-      context "when user never voted before" do
-        it "increases question's votes number" do
-          expect { question.vote_up(user) }.to change(question, :total_votes).by(1)
-        end
-      end
-
-      context "when user already voted" do
-        before { question.vote_up(user) }
-
-        it "doesn't increase question's votes number" do
-          expect { question.vote_up(user) }.not_to change(question, :total_votes)
-        end
-      end
-    end
-
     describe "#user_voted" do
       context "user voted up" do
         before { question.vote_up(user) }
@@ -132,6 +132,22 @@ RSpec.describe Question, type: :model do
       context "user didn't vote" do
         it "returns nil" do
           expect(question.user_voted(user)).to be_nil
+        end
+      end
+    end
+
+    describe "#vote_up" do
+      context "when user never voted before" do
+        it "increases question's votes number" do
+          expect { question.vote_up(user) }.to change(question, :total_votes).by(1)
+        end
+      end
+
+      context "when user already voted" do
+        before { question.vote_up(user) }
+
+        it "doesn't increase question's votes number" do
+          expect { question.vote_up(user) }.not_to change(question, :total_votes)
         end
       end
     end
