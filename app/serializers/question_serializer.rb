@@ -10,11 +10,8 @@
 #  user_id    :integer
 #  votes      :integer          default(0), not null
 #
-require_relative "helpers/files"
 
-class QuestionSerializer < ActiveModel::Serializer
-  include FilesSerializerHelper
-
+class QuestionSerializer < ApplicationSerializer
   attributes :id, :title, :body, :answers, :files, :tags, :list_of_tags
 
   def answers

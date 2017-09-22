@@ -1,4 +1,4 @@
-module FilesSerializerHelper
+class ApplicationSerializer < ActiveModel::Serializer
   def files
     object.attachments.map do |a|
       { url: a.file.url,

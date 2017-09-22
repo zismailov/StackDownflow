@@ -10,11 +10,9 @@
 #  user_id     :integer
 #  best        :boolean          default(FALSE)
 #
-require_relative "helpers/files"
 
-class AnswerSerializer < ActiveModel::Serializer
+class AnswerSerializer < ApplicationSerializer
   include ActionView::Helpers::DateHelper
-  include FilesSerializerHelper
 
   attributes :id, :body, :created, :question, :comments, :edited, :files, :best?
   has_one :user
