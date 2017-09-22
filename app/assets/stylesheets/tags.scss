@@ -1,5 +1,11 @@
+.tags {
+  padding-top: 20px;
+}
+
 .tags .label {
-  display: inline-block;
-  margin-right: 4px;
+  display: block;
+  float: left;
+  margin: 0 10px 10px 0;
   font-weight: normal;
+  font-size: 1.2em;
 }
