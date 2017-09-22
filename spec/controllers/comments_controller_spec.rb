@@ -20,6 +20,11 @@ RSpec.describe CommentsController, type: :controller do
           expect { post_create }.to change(Comment, :count).by(1)
         end
 
+        it "updates question's activity" do
+          sign_in user
+          expect { post_create }.to change question.reload.recent_activity
+        end
+
         it "returns 201 status" do
           sign_in user
           post_create

@@ -13,7 +13,7 @@
 
 FactoryGirl.define do
   factory :question do
-    title "Title"
+    sequence(:title) { |n| "Very important question #{n}" }
     body { Faker::Lorem.paragraph }
     tag_list "windows,c++,c#,macosx,android-7.0"
     user

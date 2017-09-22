@@ -16,8 +16,8 @@ class QuestionsController < ApplicationController
   end
 
   def show
-    @answers = @question.answers.order("best, created_at DESC")
-    @comments = @question.comments.order("created_at")
+    @answers = @question.answers
+    @comments = @question.comments
     @comment = Comment.new
     @answer = Answer.new
     @question.impressions.find_or_create_by(remote_ip: request.remote_ip,
@@ -52,7 +52,7 @@ class QuestionsController < ApplicationController
   end
 
   def activity
-    @questions = Question.activity
+    @questions = Question.active
     render :index
   end
 
