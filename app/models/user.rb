@@ -33,4 +33,6 @@ class User < ApplicationRecord
                        length: { in: 3..16 },
                        format: { with: /\A[\w\d_]+\z/,
                                  message: "allows only latin letters, numbers, and underscore." }
+
+  mount_uploader :avatar, AvatarUploader
 end

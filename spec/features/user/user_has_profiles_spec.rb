@@ -9,5 +9,6 @@ RSpec.feature "Registered User Has Profile", type: :feature do
     visit user_path(user.username)
 
     expect(page).to have_content user.username
+    expect(page).to have_selector "img.user-avatar[src='#{user.avatar.url}']"
   end
 end
