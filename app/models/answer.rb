@@ -16,7 +16,7 @@ class Answer < ApplicationRecord
 
   default_scope { order("best DESC, created_at DESC") }
 
-  belongs_to :question
+  belongs_to :question, counter_cache: true
   belongs_to :user
   has_many :comments, as: :commentable, dependent: :destroy
   has_many :attachments, as: :attachable, dependent: :destroy
