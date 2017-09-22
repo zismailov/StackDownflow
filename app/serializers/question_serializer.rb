@@ -12,7 +12,7 @@
 #
 
 class QuestionSerializer < ApplicationSerializer
-  attributes :id, :title, :body, :answers, :files, :tags, :list_of_tags
+  attributes :id, :title, :body, :answers, :files, :tags, :list_of_tags, :best_answer
 
   def answers
     object.answers.each { |answer| { id: answer.id, body: answer.body, author: answer.user.username } }
@@ -24,5 +24,9 @@ class QuestionSerializer < ApplicationSerializer
 
   def list_of_tags
     object.tags.map(&:name).join(",")
+  end
+
+  def best_answer
+    object.best_answer?
   end
 end

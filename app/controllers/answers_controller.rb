@@ -7,6 +7,8 @@ class AnswersController < ApplicationController
   before_action :add_user_id_to_attachments, only: [:create, :update]
   after_action :publish, only: [:create, :destroy]
 
+  respond_to :json
+
   def create
     @comment = Comment.new
     respond_with @answer = @question.answers.create(answer_params.merge(user_id: current_user.id))

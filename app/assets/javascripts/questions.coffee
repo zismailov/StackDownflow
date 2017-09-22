@@ -201,7 +201,7 @@ class @Question
       else
         this.answerById(answer.id).$el.find(".delete-answer, .edit-answer").parent().remove()
         this.$files.find(".delete-attachment").remove()
-      if answer.user.username == question_author || answer.question.has_best_answer
+      if answer.user.username == question_author || answer.question.best_answer
         this.answerById(answer.id).$el.find(".mark-best-answer").parent().remove()
 
   renderFormErrors: (form, response) ->

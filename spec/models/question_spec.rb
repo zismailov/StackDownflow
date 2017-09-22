@@ -98,18 +98,18 @@ RSpec.describe Question, type: :model do
     let(:question) { create(:question, tag_list: tags.map(&:name).join(",")) }
     let!(:answer2) { create(:answer, question: question) }
 
-    describe "#has_best_answer?" do
+    describe "#best_answer?" do
       context "when question has a best answer" do
         let!(:answer1) { create(:answer, best: true, question: question) }
 
         it "has a best answer" do
-          expect(question.has_best_answer?).to be
+          expect(question.best_answer?).to be
         end
       end
 
       context "when question has no best answer" do
         it "has no best answer" do
-          expect(question.has_best_answer?).not_to be
+          expect(question.best_answer?).not_to be
         end
       end
     end

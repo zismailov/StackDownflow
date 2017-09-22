@@ -26,7 +26,7 @@ RSpec.describe AnswersController, type: :controller do
 
         it "updates question's recent_activity field" do
           sign_in user
-          expect { post_create }.to change question.reload.recent_activity
+          expect { post_create }.to change { question.reload.recent_activity }
         end
 
         it "returns 201 status code" do

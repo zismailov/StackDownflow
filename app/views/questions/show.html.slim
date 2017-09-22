@@ -65,7 +65,7 @@
 
     .answers
       h3#answers-counter data-counter=(@answers.count) = pluralize(@answers.count, "Answer")
-      = render @answers, has_best_answer: @question.has_best_answer?
+      = render @answers, best_answer: @question.best_answer?
     - if user_signed_in?
       div
         h3 Post answer

@@ -22,7 +22,7 @@ RSpec.describe CommentsController, type: :controller do
 
         it "updates question's activity" do
           sign_in user
-          expect { post_create }.to change question.reload.recent_activity
+          expect { post_create }.to change { question.reload.recent_activity }
         end
 
         it "returns 201 status" do
