@@ -26,7 +26,7 @@ RSpec.feature "Question", "
       expect(page).to have_content question.title
       expect(page).to have_content question.body
       tags.each do |tag|
-        expect(page).to have_content tag.name
+        expect(page).to have_link tag.name
       end
     end
 
