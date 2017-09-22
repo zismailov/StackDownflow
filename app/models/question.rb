@@ -73,7 +73,7 @@ class Question < ApplicationRecord
   end
 
   def add_tags_from_list
-    tags.clear
+    tags.clear unless tag_list.nil?
     split_tags(tag_list) do |tag|
       tags.add(tag)
     end
