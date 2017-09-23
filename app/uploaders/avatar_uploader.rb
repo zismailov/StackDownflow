@@ -19,7 +19,8 @@ class AvatarUploader < CarrierWave::Uploader::Base
     # ActionController::Base.helpers.asset_path("fallback/" + [version_name, "default.png"].compact.join('_'))
 
     # "/images/fallback/" + [version_name, "default.png"].compact.join('_')
-    "/images/default_avatar.png"
+    # "/images/default_avatar.png"
+    "/images/" + [version_name, "default_avatar.png"].compact.join("_")
   end
 
   # Process files as they are uploaded:
@@ -36,6 +37,10 @@ class AvatarUploader < CarrierWave::Uploader::Base
 
   version :small do
     process resize_to_fill: [128, 128]
+  end
+
+  version :tiny, form_version: :small do
+    process resize_to_fit: [32, 32]
   end
 
   # Add a white list of extensions which are allowed to be uploaded.
