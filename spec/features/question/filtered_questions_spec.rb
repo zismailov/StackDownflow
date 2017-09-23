@@ -10,7 +10,7 @@ RSpec.feature "Filtered Questions", type: :feature do
 
   background do
     sign_in user
-    questions[0].vote_up(user)
+    # questions[0].vote_up(user)
   end
 
   scenario "User visits index page and sees questions with newest on top" do
@@ -21,6 +21,7 @@ RSpec.feature "Filtered Questions", type: :feature do
   end
 
   scenario "User visits page with questions sorted by votes and sees questions with descending sorting" do
+    questions[0].vote_up(user)
     visit root_path
     within(".questions-sorting") do
       click_link "popular"

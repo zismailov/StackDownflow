@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170922141216) do
+ActiveRecord::Schema.define(version: 20170923100837) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -22,8 +22,10 @@ ActiveRecord::Schema.define(version: 20170922141216) do
     t.datetime "updated_at", null: false
     t.integer "user_id"
     t.boolean "best", default: false
+    t.integer "votes_sum", default: 0
     t.index ["question_id"], name: "index_answers_on_question_id"
     t.index ["user_id"], name: "index_answers_on_user_id"
+    t.index ["votes_sum"], name: "index_answers_on_votes_sum"
   end
 
   create_table "attachments", force: :cascade do |t|
@@ -45,8 +47,10 @@ ActiveRecord::Schema.define(version: 20170922141216) do
     t.integer "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "votes_sum", default: 0
     t.index ["commentable_id", "commentable_type"], name: "index_comments_on_commentable_id_and_commentable_type"
     t.index ["user_id"], name: "index_comments_on_user_id"
+    t.index ["votes_sum"], name: "index_comments_on_votes_sum"
   end
 
   create_table "impressions", force: :cascade do |t|
@@ -67,7 +71,9 @@ ActiveRecord::Schema.define(version: 20170922141216) do
     t.integer "user_id"
     t.datetime "recent_activity"
     t.integer "answers_count", default: 0, null: false
+    t.integer "votes_sum", default: 0
     t.index ["user_id"], name: "index_questions_on_user_id"
+    t.index ["votes_sum"], name: "index_questions_on_votes_sum"
   end
 
   create_table "questions_tags", force: :cascade do |t|
