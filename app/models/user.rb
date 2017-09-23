@@ -35,4 +35,8 @@ class User < ApplicationRecord
                                  message: "allows only latin letters, numbers, and underscore." }
 
   mount_uploader :avatar, AvatarUploader
+
+  def to_param
+    username
+  end
 end

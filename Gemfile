@@ -22,6 +22,7 @@ gem "active_model_serializers"
 gem "carrierwave"
 gem "devise"
 gem "handlebars_assets"
+gem "mini_magick"
 gem "remotipart"
 
 gem "cocoon"

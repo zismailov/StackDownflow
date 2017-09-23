@@ -1,0 +1,10 @@
+#= require jquery
+#= require jquery_ujs
+#= require jquery.remotipart
+#= require private_pub
+#= require handlebars.runtime
+#= require bootstrap-tagsinput.min
+#= require_tree .
+#= require_tree ./templates/
+#= require app
+#= require cocoon
