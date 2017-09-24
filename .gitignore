@@ -27,6 +27,8 @@
 # Uploads
 /public/uploads
 
+/coverage
+
 /.env
 /.env.production
 
