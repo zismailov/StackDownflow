@@ -27,7 +27,7 @@ class User < ApplicationRecord
   has_many :identities
 
   devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :validatable, :omniauthable, omniauth_providers: [:facebook, :twitter]
+         :recoverable, :rememberable, :validatable, :omniauthable, omniauth_providers: [:facebook, :twitter, :vkontakte]
 
   validates :username, presence: true,
                        uniqueness: { case_sensitive: false },
@@ -49,7 +49,7 @@ class User < ApplicationRecord
     unless user
       password = Devise.friendly_token
       username = "#{auth.provider}_#{auth.uid}"
-      user = User.create(email: auth.info[:email] || "noemail@localhost.localhost", username: username, password: password)
+      user = User.create(email: auth.info[:email] || "#{username}@localhost.localhost", username: username, password: password)
     end
     user.identities.create(provider: auth.provider, uid: auth.uid)
     user
