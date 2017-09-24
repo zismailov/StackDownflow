@@ -17,7 +17,7 @@ RSpec.describe UsersController, type: :controller do
           put_update
         end
 
-        it "updates user" do
+        it "updates user's avatar" do
           expect(user.reload.avatar.path).to match(/cover_image\.png/)
         end
 

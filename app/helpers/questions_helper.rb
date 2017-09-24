@@ -1,5 +1,5 @@
 module QuestionsHelper
   def active?(page)
-    "active" if params[:action] == page
+    "active" if current_scopes.keys.include?(page)
   end
 end

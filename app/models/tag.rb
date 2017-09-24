@@ -9,11 +9,14 @@
 #
 
 class Tag < ApplicationRecord
+  default_scope -> { alphabetical }
   scope :popular, -> {
-    joins(:questions).group("tags.id").order("count(questions_tags.question_id) DESC, created_at DESC")
+    unscoped.joins(:questions)
+            .group("tags.id")
+            .order("count(questions_tags.question_id) DESC, tags.created_at DESC")
   }
-  scope :alphabetical, -> { order("name ASC") }
-  scope :newest, -> { order("created_at DESC") }
+  scope :alphabetical, -> { unscoped.order("name ASC") }
+  scope :newest, -> { unscoped.order("created_at DESC") }
 
   has_and_belongs_to_many :questions
 

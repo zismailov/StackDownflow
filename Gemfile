@@ -26,6 +26,7 @@ gem "mini_magick"
 gem "remotipart"
 
 gem "cocoon"
+gem "has_scope"
 gem "omniauth"
 gem "omniauth-facebook"
 gem "omniauth-twitter"

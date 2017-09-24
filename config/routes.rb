@@ -17,12 +17,12 @@ Rails.application.routes.draw do
       post "mark_best", on: :member
     end
 
-    collection do
-      get "/tag/:tag_name", to: "questions#tagged_with", as: :tagged
-      get "/popular", to: "questions#popular", as: :popular
-      get "/unanswered", to: "questions#unanswered", as: :unanswered
-      get "/active", to: "questions#active", as: :active
-    end
+    # collection do
+    # get "/tag/:tag_name", to: "questions#tagged_with", as: :tagged
+    # get "/popular", to: "questions#popular", as: :popular
+    # get "/unanswered", to: "questions#unanswered", as: :unanswered
+    # get "/active", to: "questions#active", as: :active
+    # end
   end
 
   resources :tags, only: [:index] do

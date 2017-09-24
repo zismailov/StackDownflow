@@ -55,7 +55,7 @@ class Question < ApplicationRecord
 
   def validate_tag_list
     split_tags(tag_list) do |tag|
-      tag = Tag.find_or_initialize_by(name: tag)
+      tag = Tag.unscoped.find_or_initialize_by(name: tag)
       if tag.new_record? && !tag.valid?
         errors[:tag_list] << "Tags #{tag.errors[:name][0]}"
         break
@@ -66,7 +66,7 @@ class Question < ApplicationRecord
   def add_tags_from_list
     tags.clear unless tag_list.nil?
     split_tags(tag_list) do |tag|
-      tags.add(tag)
+      tags.push Tag.unscoped.find_or_create_by(name: tag)
     end
   end
 

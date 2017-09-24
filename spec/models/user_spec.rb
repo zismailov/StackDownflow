@@ -76,23 +76,38 @@ RSpec.describe User, type: :model do
         context "when user doesn't exist yet" do
           let(:auth) { OmniAuth::AuthHash.new(provider: "facebook", uid: "123456", info: { email: "test@mail.com" }) }
 
+          context "when email provided by provider" do
+            it "sets user's email to the provided" do
+              expect(User.find_for_oauth(auth).email).to eq "test@mail.com"
+            end
+          end
+
+          context "when email is not provided by provider" do
+            let(:auth) { OmniAuth::AuthHash.new(provider: "facebook", uid: "123456", info: {}) }
+
+            it "sets user's email to a generated one" do
+              expect(User.find_for_oauth(auth).email).to eq "#{auth.provider}_#{auth.uid}@localhost.localhost"
+            end
+          end
+
           it "creates a new user" do
             expect { User.find_for_oauth(auth) }.to change(User, :count)
           end
+
           it "creates a new identity for the user" do
             expect { User.find_for_oauth(auth) }.to change(Identity, :count)
           end
+
           it "creates a new idetity with correct provider and uid" do
             identity = User.find_for_oauth(auth).identities.first
             expect(identity.provider).to eq auth.provider
             expect(identity.uid).to eq auth.uid
           end
-          it "sets user's email" do
-            expect(User.find_for_oauth(auth).email).to eq "test@mail.com"
-          end
+
           it "sets username" do
             expect(User.find_for_oauth(auth).username).to eq "#{auth.provider}_#{auth.uid}"
           end
+
           it "returns the new user" do
             expect(User.find_for_oauth(auth)).to be_a User
           end
