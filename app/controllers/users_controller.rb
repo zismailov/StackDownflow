@@ -1,11 +1,13 @@
 class UsersController < ApplicationController
   before_action :authenticate_user!, only: :update
   before_action :set_user
-  before_action :user_is_current_user?, only: :update
+  before_action :user_is_current_user?, only: [:edit, :update]
 
   respond_to :json
 
   def show; end
+
+  def edit; end
 
   def update
     update_resource @user
@@ -14,7 +16,7 @@ class UsersController < ApplicationController
   private
 
   def user_params
-    params.require(:user).permit(:avatar)
+    params.require(:user).permit(:avatar, :username, :email)
   end
 
   def set_user
@@ -22,6 +24,10 @@ class UsersController < ApplicationController
   end
 
   def user_is_current_user?
-    render json: nil, status: 403 unless @user == current_user
+    return unless @user == current_user
+    respond_with do |format|
+      format.json { render json: nil, status: 403 }
+      format.html { redirect_to @user }
+    end
   end
 end

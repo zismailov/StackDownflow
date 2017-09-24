@@ -44,6 +44,7 @@ class User < ApplicationRecord
 
   # rubocop:disable LineLength
   # rubocop:disable Metrics/AbcSize
+  # rubocop:disable Metrics/MethodLength
   def self.find_for_oauth(auth)
     identity = Identity.find_by(provider: auth.provider, uid: auth.uid)
     return identity.user if identity

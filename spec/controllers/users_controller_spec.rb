@@ -7,7 +7,9 @@ RSpec.describe UsersController, type: :controller do
   describe "#update" do
     let(:new_avatar) { Rack::Test::UploadedFile.new("#{Rails.root}/spec/fixtures/cover_image.png", "image/png") }
     let(:put_update) do
-      put :update, params: { username: user.username, user: { avatar: new_avatar } }, format: :json
+      put :update, params: {
+        username: user.username, user: { username: user.username.reverse, avatar: new_avatar }
+      }, format: :json
     end
 
     context "as an authenticated user" do
@@ -19,6 +21,10 @@ RSpec.describe UsersController, type: :controller do
 
         it "updates user's avatar" do
           expect(user.reload.avatar.path).to match(/cover_image\.png/)
+        end
+
+        it "updates user's username" do
+          expect(user.reload.username).to eq user.username
         end
 
         it "returns json object" do
@@ -42,6 +48,7 @@ RSpec.describe UsersController, type: :controller do
 
         it "doesn't update user" do
           expect(user2.reload.avatar.path).not_to match(/cover_image\.png/)
+          expect(user2.reload.username).not_to eq user.username.reverse
         end
 
         it "returns status code 403" do
@@ -55,6 +62,7 @@ RSpec.describe UsersController, type: :controller do
 
       it "doesn't update user" do
         expect(user.reload.avatar.path).not_to match(/cover_image\.png/)
+        expect(user2.reload.username).not_to eq user.username.reverse
       end
 
       it "returns status code 401" do
