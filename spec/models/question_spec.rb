@@ -147,7 +147,7 @@ RSpec.describe Question, type: :model do
     describe "#vote_up" do
       context "when user never voted before" do
         it "increases question's votes number" do
-          expect { question.vote_up(user) }.to change{ question.reload.votes_sum }.by(1)
+          expect { question.vote_up(user) }.to change { question.reload.votes_sum }.by(1)
         end
       end
 
@@ -155,7 +155,7 @@ RSpec.describe Question, type: :model do
         before { question.vote_up(user) }
 
         it "doesn't increase question's votes number" do
-          expect { question.vote_up(user) }.not_to change{ question.reload.votes_sum }
+          expect { question.vote_up(user) }.not_to change { question.reload.votes_sum }
         end
       end
     end
@@ -163,7 +163,7 @@ RSpec.describe Question, type: :model do
     describe "#vote_down" do
       context "when user never voted before" do
         it "decreases question's votes number" do
-          expect { question.vote_down(user) }.to change{ question.reload.votes_sum }.by(-1)
+          expect { question.vote_down(user) }.to change { question.reload.votes_sum }.by(-1)
         end
       end
 
@@ -171,7 +171,7 @@ RSpec.describe Question, type: :model do
         before { question.vote_down(user) }
 
         it "doesn't increase question's votes number" do
-          expect { question.vote_down(user) }.not_to change{ question.reload.votes_sum }
+          expect { question.vote_down(user) }.not_to change { question.reload.votes_sum }
         end
       end
     end

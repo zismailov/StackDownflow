@@ -26,6 +26,8 @@ gem "mini_magick"
 gem "remotipart"
 
 gem "cocoon"
+gem "omniauth"
+gem "omniauth-facebook"
 gem "private_pub"
 gem "responders"
 gem "thin"
@@ -39,6 +41,7 @@ group :test do
 end
 
 group :development, :test do
+  gem "dotenv-rails"
   gem "factory_girl_rails"
   gem "launchy"
   gem "pry"

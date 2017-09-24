@@ -59,7 +59,7 @@ RSpec.describe Comment, type: :model do
     describe "#vote_up" do
       context "when user never voted before" do
         it "increases comment's votes number" do
-          expect { comment.vote_up(user) }.to change{ comment.reload.votes_sum }.by(1)
+          expect { comment.vote_up(user) }.to change { comment.reload.votes_sum }.by(1)
         end
       end
 
@@ -67,7 +67,7 @@ RSpec.describe Comment, type: :model do
         before { comment.vote_up(user) }
 
         it "doesn't increase comment's votes number" do
-          expect { comment.vote_up(user) }.not_to change{ comment.reload.votes_sum }
+          expect { comment.vote_up(user) }.not_to change { comment.reload.votes_sum }
         end
       end
     end
@@ -75,7 +75,7 @@ RSpec.describe Comment, type: :model do
     describe "#vote_down" do
       context "when user never voted before" do
         it "decreases comment's votes number" do
-          expect { comment.vote_down(user) }.to change{ comment.reload.votes_sum }.by(-1)
+          expect { comment.vote_down(user) }.to change { comment.reload.votes_sum }.by(-1)
         end
       end
 
@@ -83,7 +83,7 @@ RSpec.describe Comment, type: :model do
         before { comment.vote_down(user) }
 
         it "doesn't increase comment's votes number" do
-          expect { comment.vote_down(user) }.not_to change{ comment.reload.votes_sum }
+          expect { comment.vote_down(user) }.not_to change { comment.reload.votes_sum }
         end
       end
     end

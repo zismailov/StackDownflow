@@ -18,6 +18,9 @@
 
 .idea
 
+/.env
+/.env.production
+
 # On mac
 .DS_Store
 
