@@ -36,6 +36,7 @@ RSpec.describe User, type: :model do
     it { should validate_length_of(:username).is_at_least(3).is_at_most(32) }
     it { should allow_value("pedro", "Pedro123", "Pedro_Juan").for(:username) }
     it { should_not allow_value("12", "$#!Pedro123", "Pedro Juan").for(:username) }
+    it { should validate_numericality_of :age }
   end
 
   describe "methods" do
