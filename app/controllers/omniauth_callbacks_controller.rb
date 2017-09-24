@@ -1,25 +1,19 @@
 class OmniauthCallbacksController < Devise::OmniauthCallbacksController
-  def facebook
-    @user = User.find_for_oauth(request.env["omniauth.auth"])
-    if @user
-      sign_in_and_redirect @user, event: :authentication
-      set_flash_message :notice, :success, kind: "Facebook" if is_navigational_format?
-    end
-  end
+  before_action :auth_provider
 
-  def twitter
-    @user = User.find_for_oauth(request.env["omniauth.auth"])
-    if @user
-      sign_in_and_redirect @user, event: :authentication
-      set_flash_message :notice, :success, kind: "Twitter" if is_navigational_format?
-    end
-  end
+  def facebook; end
 
-  def vkontakte
+  def twitter; end
+
+  def vkontakte; end
+
+  private
+
+  def auth_provider
     @user = User.find_for_oauth(request.env["omniauth.auth"])
     if @user
       sign_in_and_redirect @user, event: :authentication
-      set_flash_message :notice, :success, kind: "vKontekte" if is_navigational_format?
+      set_flash_message :notice, :success, kind: params[:action].capitalize if is_navigational_format?
     end
   end
 end
