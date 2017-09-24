@@ -23,4 +23,8 @@ module FeatureHelpers
     fill_in "Password confirmation", with: password
     click_button "Sign up"
   end
+
+  def last_mail
+    ActionMailer::Base.deliveries.last
+  end
 end

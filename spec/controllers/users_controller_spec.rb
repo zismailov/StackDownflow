@@ -70,4 +70,60 @@ RSpec.describe UsersController, type: :controller do
       end
     end
   end
+
+  describe "#update_email" do
+    new_email = "some_new@email_address.com"
+    let(:put_update) do
+      put :update_email, params: {
+        username: user.username, user: { username: user.username.reverse, email: new_email }
+      }
+    end
+
+    context "as an authenticated user" do
+      context "when user is current_user" do
+        before do
+          sign_in user
+          put_update
+        end
+
+        it "sets unconfirmed_email" do
+          expect(user.reload.unconfirmed_email).to eq new_email
+        end
+
+        it "redirects to root path" do
+          expect(response).to redirect_to root_path
+        end
+      end
+
+      context "when user is not current_user" do
+        let(:put_update) do
+          put :update, params: { username: user2.username, user: { email: new_email } }
+        end
+        before do
+          sign_in user
+          put_update
+        end
+
+        it "doesn't update user" do
+          expect(user2.reload.unconfirmed_email).not_to eq new_email
+        end
+
+        it "redirects to user page" do
+          expect(response).to redirect_to user_path(user2)
+        end
+      end
+    end
+
+    context "as an guest user" do
+      before { put_update }
+
+      it "doesn't update user" do
+        expect(user.reload.email).not_to eq new_email
+      end
+
+      it "redirects to sign in page" do
+        expect(response).to redirect_to new_user_session_path
+      end
+    end
+  end
 end

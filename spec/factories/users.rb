@@ -23,5 +23,7 @@ FactoryGirl.define do
     sequence(:username) { |n| "User#{n}" }
     email { Faker::Internet.email }
     password { SecureRandom.hex(8) }
+    confirmed_at Time.now
+    confirmation_sent_at 10.days.ago
   end
 end

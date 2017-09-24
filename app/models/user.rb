@@ -24,9 +24,9 @@ class User < ApplicationRecord
   has_many :comments
   has_many :votes
   has_many :attachments
-  has_many :identities
+  has_many :identities, dependent: :destroy
 
-  devise :database_authenticatable, :registerable,
+  devise :database_authenticatable, :registerable, :confirmable,
          :recoverable, :rememberable, :validatable,
          :omniauthable, omniauth_providers: [:facebook, :twitter, :vkontakte, :github]
 
@@ -50,7 +50,10 @@ class User < ApplicationRecord
     username = "#{auth.provider}_#{auth.uid}"
     email = "#{username}@stackunderflow.dev"
     password = Devise.friendly_token
-    user = User.create(email: email, username: username, password: password)
+    user = User.new(email: email, username: username, password: password)
+    # user.skip_confirmation_notification!
+    user.skip_confirmation!
+    user.save!
     user.identities.create(provider: auth.provider, uid: auth.uid)
     user
   end

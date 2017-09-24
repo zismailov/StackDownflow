@@ -27,6 +27,7 @@ gem "remotipart"
 
 gem "cocoon"
 gem "has_scope"
+gem "mailcatcher"
 gem "omniauth"
 gem "omniauth-facebook"
 gem "omniauth-github"

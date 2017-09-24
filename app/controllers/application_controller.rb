@@ -5,6 +5,7 @@ class ApplicationController < ActionController::Base
 
   protect_from_forgery with: :exception
   before_action :configure_permitted_parameters, if: :devise_controller?
+  before_action :check_if_confirmed
 
   def default_serializer_options
     { root: false }
@@ -38,6 +39,17 @@ class ApplicationController < ActionController::Base
     model = params[:controller].singularize.to_sym
     params[model][:attachments_attributes]&.each do |_k, v|
       v[:user_id] = current_user.id
+    end
+  end
+
+  def check_if_confirmed
+    if user_signed_in? && (current_user.confirmation_sent_at.nil? || !current_user.unconfirmed_email.nil?) && !(params[:controller] == "users" && (params[:action] == "update" || params[:action] == "update_email")) && !(params[:controller] == "devise/confirmations" && params[:action] == "show") && !(params[:controller] == "devise/sessions" && params[:action] == "destroy")
+      if current_user.confirmation_sent_at && current_user.confirmation_sent_at > current_user.confirmed_at
+        flash.now[:success] = "We sent a confirmation email on #{current_user.unconfirmed_email}. Please, click 'Confirm my account' link in the email or provide other address below."
+      else
+        flash.now[:info] = "Please, provide your email address below. We will send you a confirmation email on it."
+      end
+      render "users/provide_email"
     end
   end
 end
