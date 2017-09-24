@@ -13,6 +13,8 @@ class UsersController < ApplicationController
     update_resource @user
   end
 
+  def logins; end
+
   private
 
   def user_params
