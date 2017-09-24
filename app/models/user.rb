@@ -27,7 +27,8 @@ class User < ApplicationRecord
   has_many :identities
 
   devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :validatable, :omniauthable, omniauth_providers: [:facebook, :twitter, :vkontakte]
+         :recoverable, :rememberable, :validatable,
+         :omniauthable, omniauth_providers: [:facebook, :twitter, :vkontakte, :github]
 
   validates :username, presence: true,
                        uniqueness: { case_sensitive: false },
