@@ -47,11 +47,14 @@ class User < ApplicationRecord
     identity = Identity.find_by(provider: auth.provider, uid: auth.uid)
     return identity.user if identity
 
-    user = User.find_by(email: auth.info["email"])
+    username = "#{auth.provider}_#{auth.uid}"
+    email = auth.respond_to?(:info) && !auth.info[:email].nil? && !auth.info[:email].empty? ? auth.info[:email] : "#{username}@stackdownflow.dev"
+
+    user = User.find_by(email: email)
+
     unless user
       password = Devise.friendly_token
-      username = "#{auth.provider}_#{auth.uid}"
-      user = User.create(email: auth.info[:email] || "#{username}@localhost.localhost", username: username, password: password)
+      user = User.create(email: email, username: username, password: password)
     end
     user.identities.create(provider: auth.provider, uid: auth.uid)
     user
