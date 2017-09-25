@@ -54,10 +54,6 @@ class Question < ApplicationRecord
     self.tags = names.map { |name| new_tag = Tag.find_or_create_by(name: name) }
   end
 
-  def form_tag_list
-    tags.map(&:name).join(",")
-  end
-
   private
 
   def set_recent_activity
