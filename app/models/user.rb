@@ -19,6 +19,8 @@
 #
 
 class User < ApplicationRecord
+  enum status: { guest: 0, without_email: 1, pending: 2, regular: 3, admin: 99 }
+
   has_many :questions
   has_many :answers
   has_many :comments
@@ -51,7 +53,6 @@ class User < ApplicationRecord
     email = "#{username}@stackunderflow.dev"
     password = Devise.friendly_token
     user = User.new(email: email, username: username, password: password)
-    # user.skip_confirmation_notification!
     user.skip_confirmation!
     user.save!
     user.identities.create(provider: auth.provider, uid: auth.uid)
