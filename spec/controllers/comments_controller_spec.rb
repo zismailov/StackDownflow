@@ -96,15 +96,15 @@ RSpec.describe CommentsController, type: :controller do
         end
       end
 
-      context "comment doesn't belong to current user" do
+      context "when doesn't belong to current user" do
         let(:comment) { comment2 }
         before do
           sign_in user
           put_update
         end
 
-        it "returns 403 error" do
-          expect(response.status).to eq 403
+        it "returns 401 error" do
+          expect(response.status).to eq 401
         end
       end
     end
@@ -143,9 +143,9 @@ RSpec.describe CommentsController, type: :controller do
           expect { delete_destroy }.not_to change(Comment, :count)
         end
 
-        it "returns 403 error" do
+        it "returns 401 error" do
           delete_destroy
-          expect(response.status).to eq 403
+          expect(response.status).to eq 401
         end
       end
     end

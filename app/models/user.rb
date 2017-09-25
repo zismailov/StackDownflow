@@ -28,6 +28,11 @@ class User < ApplicationRecord
   has_many :attachments
   has_many :identities, dependent: :destroy
 
+  after_update :set_pending_status
+  def after_confirmation
+    regular!
+  end
+
   devise :database_authenticatable, :registerable, :confirmable,
          :recoverable, :rememberable, :validatable,
          :omniauthable, omniauth_providers: [:facebook, :twitter, :vkontakte, :github]
@@ -54,8 +59,18 @@ class User < ApplicationRecord
     password = Devise.friendly_token
     user = User.new(email: email, username: username, password: password)
     user.skip_confirmation!
+    user.status = "without_email"
     user.save!
     user.identities.create(provider: auth.provider, uid: auth.uid)
     user
+  end
+
+  private
+
+  def set_pending_status
+    if unconfirmed_email_changed? && !unconfirmed_email.nil?
+      reset_changes
+      pending!
+    end
   end
 end

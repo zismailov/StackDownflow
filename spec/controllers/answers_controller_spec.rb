@@ -125,8 +125,8 @@ RSpec.describe AnswersController, type: :controller do
           expect(answer.body).not_to eq edited_answer.body
         end
 
-        it "redirect to question" do
-          expect(response).to redirect_to answer.question
+        it "returns 401 status code" do
+          expect(response.status).to eq 401
         end
       end
     end
@@ -184,10 +184,10 @@ RSpec.describe AnswersController, type: :controller do
           expect { delete_destroy }.not_to change(Answer, :count)
         end
 
-        it "redirect to question" do
+        it "returns 401 status code" do
           sign_in user
           delete_destroy
-          expect(response).to redirect_to answer.question
+          expect(response.status).to eq 401
         end
       end
     end
@@ -240,8 +240,8 @@ RSpec.describe AnswersController, type: :controller do
             expect(answer.reload).not_to be_best
           end
 
-          it "redirects to question page" do
-            expect(response).to redirect_to question
+          it "redirects to root path" do
+            expect(response).to redirect_to root_path
           end
         end
       end
@@ -252,8 +252,8 @@ RSpec.describe AnswersController, type: :controller do
           mark_best
         end
 
-        it "redirects to question page" do
-          expect(response).to redirect_to question
+        it "redirects to root path" do
+          expect(response).to redirect_to root_path
         end
       end
     end

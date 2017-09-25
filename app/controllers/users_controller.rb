@@ -3,6 +3,8 @@ class UsersController < ApplicationController
   before_action :set_user
   before_action :user_is_current_user?, except: [:show, :logins]
 
+  authorize_resource
+
   respond_to :json
 
   def show; end
@@ -13,15 +15,9 @@ class UsersController < ApplicationController
     update_resource @user
   end
 
-  def update_email
-    if @user.update(user_params)
-      redirect_to root_path
-    else
-      render "provide_email"
-    end
+  def logins
+    authorize! :logins, current_user
   end
-
-  def logins; end
 
   private
 

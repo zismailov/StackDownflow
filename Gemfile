@@ -25,6 +25,7 @@ gem "handlebars_assets"
 gem "mini_magick"
 gem "remotipart"
 
+gem "cancancan"
 gem "cocoon"
 gem "has_scope"
 gem "mailcatcher"

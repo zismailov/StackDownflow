@@ -1,5 +1,5 @@
-require "codeclimate-test-reporter"
-CodeClimate::TestReporter.start
+require "simplecov"
+SimpleCov.start
 ENV["RAILS_ENV"] ||= "test"
 require File.expand_path("../../config/environment", __FILE__)
 # Prevent database truncation if the environment is production
@@ -8,6 +8,7 @@ require "spec_helper"
 require "rspec/rails"
 require "support/database_cleaner"
 require "capybara/poltergeist"
+require "cancan/matchers"
 
 # Add additional requires below this line. Rails is not loaded until this point!
 

@@ -25,5 +25,6 @@ FactoryGirl.define do
     password { SecureRandom.hex(8) }
     confirmed_at Time.now
     confirmation_sent_at 10.days.ago
+    status 3
   end
 end

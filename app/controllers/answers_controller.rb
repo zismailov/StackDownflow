@@ -2,12 +2,12 @@ class AnswersController < ApplicationController
   before_action :authenticate_user!
   before_action :set_question, only: [:create]
   before_action :set_answer, except: :create
-  before_action :answer_belongs_to_current_user?, only: [:edit, :update, :destroy]
-  before_action :question_belongs_to_current_user?, only: [:mark_best]
   before_action :add_user_id_to_attachments, only: [:create, :update]
   after_action :publish, only: [:create, :destroy]
 
   respond_to :json
+
+  authorize_resource
 
   def create
     @comment = Comment.new
@@ -40,14 +40,6 @@ class AnswersController < ApplicationController
 
   def set_question
     @question = Question.find(params[:question_id])
-  end
-
-  def answer_belongs_to_current_user?
-    redirect_to @answer.question unless @answer.user == current_user
-  end
-
-  def question_belongs_to_current_user?
-    redirect_to @answer.question unless @answer.question.user == current_user
   end
 
   def publish
