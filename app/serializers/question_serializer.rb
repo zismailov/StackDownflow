@@ -23,7 +23,7 @@ class QuestionSerializer < ApplicationSerializer
   end
 
   def list_of_tags
-    object.tags.map(&:name).join(",")
+    object.tag_list
   end
 
   def best_answer

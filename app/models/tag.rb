@@ -22,8 +22,5 @@ class Tag < ApplicationRecord
 
   validates :name, presence: true,
                    uniqueness: { case_sensitive: false },
-                   length: { in: 1..24 },
-                   format: { with: /\A[a-zA-Z][\w#\+\-\.]*\z/,
-                             message: "can include only: latin letters, digits, ., +, -, _, and #.
-                                       Every tag must begin with a letter." }
+                   length: { in: 1..24 }
 end

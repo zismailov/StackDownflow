@@ -11,8 +11,9 @@ class ApplicationController < ActionController::Base
     { root: false }
   end
 
-  # check_authorization
-  # skip_authorization_check unless: :devise_controller?
+  check_authorization
+  skip_authorization_check if: :devise_controller?
+
   rescue_from CanCan::AccessDenied do |_exception|
     respond_to do |format|
       format.html { redirect_to root_path }

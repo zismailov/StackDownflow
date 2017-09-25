@@ -117,16 +117,9 @@ RSpec.describe QuestionsController, type: :controller do
   end
 
   describe "#update" do
-    let(:edited_question) do
-      edited = question.dup
-      edited.title = question.title.reverse
-      edited
-    end
     let(:put_update) do
       put :update, params: {
-        id: question.id, question: {
-          title: edited_question.title, body: question.body, tag_list: question.tag_list
-        }
+        id: question.id, question: { title: question.title.reverse, body: question.body, tag_list: question.tag_list }
       }, format: :json
     end
 
@@ -139,14 +132,14 @@ RSpec.describe QuestionsController, type: :controller do
           end
 
           it "changes question's attribute" do
-            expect(question.reload.title).to eq edited_question.title
+            expect(question.title).to eq question.reload.title.reverse
           end
 
           it "returns question's json" do
             json = JSON.parse(response.body)
-            expect(json["title"]).to eq edited_question.title
-            expect(json["body"]).to eq edited_question.body
-            expect(json["list_of_tags"]).to eq edited_question.tag_list
+            expect(json["title"]).to eq question.title.reverse
+            expect(json["body"]).to eq question.body
+            expect(json["list_of_tags"]).to eq question.tag_list
           end
 
           it "returns 200 status code" do
@@ -157,12 +150,13 @@ RSpec.describe QuestionsController, type: :controller do
         context "with invalid data" do
           before do
             sign_in user
-            edited_question.title = nil
-            put_update
+            put :update, params: {
+              id: question.id, question: { title: "", body: question.body, tag_list: question.tag_list }
+            }, format: :json
           end
 
           it "doesn't change question's attribute" do
-            expect(question.reload.title).not_to eq edited_question.title
+            expect(question.reload.title).not_to eq question.title.reverse
           end
 
           it "returns 422 status" do
@@ -188,7 +182,7 @@ RSpec.describe QuestionsController, type: :controller do
       before { put_update }
 
       it "doesn't change question's attribute" do
-        expect(question.reload.title).not_to eq edited_question.title
+        expect(question.reload.title).not_to eq question.title.reverse
       end
 
       it "returns 401 error" do

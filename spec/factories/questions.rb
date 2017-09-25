@@ -15,7 +15,7 @@ FactoryGirl.define do
   factory :question do
     sequence(:title) { |n| "Very important question #{n}" }
     body { Faker::Lorem.paragraph }
-    tag_list "windows,c++,c#,macosx,android-7.0"
+    tag_list "android-8.0,c#,c++,macosx,windows"
     user
 
     factory :invalid_question do
