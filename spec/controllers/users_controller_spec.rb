@@ -24,7 +24,7 @@ RSpec.describe UsersController, type: :controller do
         end
 
         it "updates user's username" do
-          expect(user.reload.username).to eq user.username
+          expect(user.username.reverse).to eq user.reload.username
         end
 
         it "returns json object" do
@@ -39,7 +39,9 @@ RSpec.describe UsersController, type: :controller do
 
       context "when user is not current_user" do
         let(:put_update) do
-          put :update, params: { username: user2.username, user: { avatar: new_avatar } }, format: :json
+          put :update, params: {
+            username: user2.username, user: { avatar: new_avatar, username: user2.username.reverse }
+          }, format: :json
         end
         before do
           sign_in user
@@ -48,11 +50,11 @@ RSpec.describe UsersController, type: :controller do
 
         it "doesn't update user" do
           expect(user2.reload.avatar.path).not_to match(/cover_image\.png/)
-          expect(user2.reload.username).not_to eq user.username.reverse
+          expect(user2.username.reverse).not_to eq user2.reload.username
         end
 
-        it "returns status code 403" do
-          expect(response.status).to eq 403
+        it "returns status code 401" do
+          expect(response.status).to eq 401
         end
       end
     end

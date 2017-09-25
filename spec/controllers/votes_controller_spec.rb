@@ -50,10 +50,10 @@ RSpec.describe VotesController, type: :controller do
           expect { patch_vote_up }.not_to change(comment, :votes_sum)
         end
 
-        it "returns status 403" do
+        it "returns status 401" do
           sign_in user
           patch_vote_up
-          expect(response.status).to eq 403
+          expect(response.status).to eq 401
         end
       end
     end
@@ -112,10 +112,10 @@ RSpec.describe VotesController, type: :controller do
           expect { patch_vote_down }.not_to change(comment, :votes_sum)
         end
 
-        it "returns status 403" do
+        it "returns status 401" do
           sign_in user
           patch_vote_down
-          expect(response.status).to eq 403
+          expect(response.status).to eq 401
         end
       end
     end

@@ -40,7 +40,7 @@ class Question < ApplicationRecord
   validates :title, presence: true, length: { in: 5..512 }
   validates :tag_list, presence: true
 
-  def has_best_answer?
+  def best_answer?
     answers.find_by(best: true) ? true : false
   end
 

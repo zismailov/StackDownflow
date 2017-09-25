@@ -1,7 +1,6 @@
 class VotesController < ApplicationController
   before_action :authenticate_user!
   before_action :find_parent
-  before_action :votable_doesnt_belong_to_current_user?
 
   def vote_up
     authorize! :vote_up, @parent
@@ -16,10 +15,6 @@ class VotesController < ApplicationController
   end
 
   private
-
-  def votable_doesnt_belong_to_current_user?
-    render json: :nothing, status: 403 if @parent.user == current_user
-  end
 
   # rubocop:disable LineLength
   # rubocop:disable Metrics/AbcSize
