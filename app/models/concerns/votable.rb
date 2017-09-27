@@ -5,15 +5,15 @@ module Votable
     has_many :votes, as: :votable, dependent: :destroy
   end
 
+  # rubocop:disable Metrics/AbcSize
   def vote_up(voter)
-    unless voted_by? voter
-      votes.create(user_id: voter.id, vote: 1)
+    return if voted_by? voter
+    votes.create(user_id: voter.id, vote: 1)
 
-      if self.class.name == "Question"
-        user.increment(:reputation, 5).save!
-      elsif self.class.name == "Answer"
-        user.increment(:reputation, 10).save!
-      end
+    if self.class.name == "Question"
+      user.increment(:reputation, 5).save!
+    elsif self.class.name == "Answer"
+      user.increment(:reputation, 10).save!
     end
   end
 

@@ -11,6 +11,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
   private
 
+  # rubocop:disable Metrics/AbcSize
   def auth_provider
     auth = request.env["omniauth.auth"]
     if user_signed_in?

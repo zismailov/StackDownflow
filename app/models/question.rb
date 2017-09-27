@@ -23,12 +23,7 @@ class Question < ApplicationRecord
   before_save :set_recent_activity
 
   belongs_to :user
-  has_and_belongs_to_many :tags do
-    def add(tag)
-      new_tag = Tag.find_or_create_by(name: tag) if tag.present?
-      push new_tag
-    end
-  end
+  has_and_belongs_to_many :tags
   has_many :answers, dependent: :destroy
   has_many :comments, as: :commentable, dependent: :destroy
   has_many :attachments, as: :attachable, dependent: :destroy
@@ -51,7 +46,7 @@ class Question < ApplicationRecord
   def tag_list=(list)
     list ||= ""
     names = list.split(",").map { |n| n.strip.downcase.tr(" ", "-") }.uniq
-    self.tags = names.map { |name| new_tag = Tag.find_or_create_by(name: name) }
+    self.tags = names.map { |name| Tag.find_or_create_by(name: name) }
   end
 
   private

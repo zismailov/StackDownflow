@@ -34,12 +34,15 @@ class ApplicationController < ActionController::Base
   end
 
   # rubocop:disable Metrics/AbcSize
+  # rubocop:disable Metrics/MethodLength
   def update_resource(resource)
     respond_with resource.update(send(:"#{resource.class.to_s.downcase}_params")) do |format|
       if resource.errors.any?
+        flash[:danger] = "Unable to update #{resource.class.name}. See errors below."
         format.json { render json: resource.errors, status: 422 }
         format.html { render :edit }
       else
+        flash[:success] = "#{resource.class.name} was successfully updated."
         format.json { render json: resource, status: 200 }
         format.html { redirect_to resource }
       end
@@ -53,6 +56,7 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  # rubocop:disable Style/GuardClause
   def check_if_confirmed
     if user_signed_in? && current_user.status == "without_email"
       flash.now[:danger] = "Your account is restricted. Please, provide your email address on 'Edit profile' page."

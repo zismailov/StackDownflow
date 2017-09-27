@@ -16,10 +16,12 @@ RSpec.feature "Sign up", "
   scenario "Non-registered user signs up" do
     sign_up_with user.username, user.email, user.password
 
-    expect(page).to have_content "A message with a confirmation link has been sent to your email address. Please follow the link to activate your account."
+    expect(page).to have_content "A message with a confirmation link has been sent to your email address.
+                                  Please follow the link to activate your account."
     expect(ActionMailer::Base.deliveries.count).to eq 1
     last_email = ActionMailer::Base.deliveries.last
-    confirmation_link = /<a href="(.+)">Confirm my account<\/a>/.match(last_email.body.to_s)[1]
+    confirmation_link = %r{<a href="(.+)">Confirm my account<\/a>}.match(last_email.body.to_s)[1]
+    # /<a href="(.+)">Confirm my account<\/a>/
     visit confirmation_link
     expect(page).to have_content "successfully confirmed"
     sign_in user.email, user.password
@@ -45,18 +47,20 @@ RSpec.feature "Sign up", "
     visit new_user_registration_path
     click_link "Sign in with Facebook"
     expect(page).to have_content "Signed in as"
-    expect(page).to have_content "Your account is restricted. Please, provide your email address on 'Edit profile' page."
+    expect(page).to have_content "Your account is restricted. Please, provide your email address
+                                  on 'Edit profile' page."
 
     user = User.last
     visit edit_user_path(user)
     fill_in "Email", with: "real@email.truly"
     click_button "Update User"
 
-    expect(page).to have_content "We sent a confirmation email on #{user.reload.unconfirmed_email}. Please, click 'Confirm my account' link in the email or provide other address below."
+    expect(page).to have_content "We sent a confirmation email on #{user.reload.unconfirmed_email}.
+                                  Please, click 'Confirm my account' link in the email or provide other address below."
 
     expect(ActionMailer::Base.deliveries.count).to eq 1
     last_email = ActionMailer::Base.deliveries.last
-    confirmation_link = /<a href="(.+)">Confirm my account<\/a>/.match(last_email.body.to_s)[1]
+    confirmation_link = %r{<a href="(.+)">Confirm my account<\/a>}.match(last_email.body.to_s)[1]
     visit confirmation_link
     expect(page).to have_content "successfully confirmed"
     click_link "Sign in with Facebook"
@@ -74,7 +78,7 @@ RSpec.feature "Sign up", "
     fill_in "Email", with: user2.email
     click_button "Update User"
 
-    expect(page).to have_content "problems"
+    expect(page).to have_content "Unable"
     expect(page).to have_content "taken"
   end
 end

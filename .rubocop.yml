@@ -35,10 +35,25 @@ Metrics/BlockLength:
     - "**/*_spec.rb"
     - "config/**/*"
 
+Metrics/AbcSize:
+  Exclude:
+    - "app/models/ability.rb"
+
+Metrics/CyclomaticComplexity:
+  Exclude:
+    - "app/models/ability.rb"
+
+Metrics/MethodLength:
+  Exclude:
+    - "app/models/ability.rb"
+
 Style/Documentation:
   Enabled: false
 
 Style/FileName:
   Description: Use snake_case for source file names.
   StyleGuide: https://github.com/bbatsov/ruby-style-guide#snake-case-files
+  Enabled: false
+
+Lint/AmbiguousBlockAssociation:
   Enabled: false

@@ -20,18 +20,17 @@ class Answer < ApplicationRecord
   belongs_to :user
   has_many :comments, as: :commentable, dependent: :destroy
   has_many :attachments, as: :attachable, dependent: :destroy
-  accepts_nested_attributes_for :attachments,
-                                reject_if: proc { |attrs| attrs["file"].blank? && attrs["file_cache"].blank? }
+  accepts_nested_attributes_for :attachments, reject_if:
+                                              proc { |attrs| attrs["file"].blank? && attrs["file_cache"].blank? }
 
   after_save :update_question_activity
 
   validates :body, presence: true, length: { in: 10..5000 }
 
   def mark_best!
-    unless question.has_best_answer?
-      update(best: true)
-      user.increment(:reputation, 15).save!
-    end
+    return if question.best_answer?
+    update(best: true)
+    user.increment(:reputation, 15).save!
   end
 
   private

@@ -50,6 +50,8 @@ class User < ApplicationRecord
     username
   end
 
+  # rubocop:disable Metrics/AbcSize
+  # rubocop:disable Metrics/MethodLength
   def self.find_for_oauth(auth)
     identity = Identity.find_by(provider: auth.provider, uid: auth.uid)
     return identity.user if identity
@@ -68,9 +70,8 @@ class User < ApplicationRecord
   private
 
   def set_pending_status
-    if unconfirmed_email_changed? && !unconfirmed_email.nil?
-      reset_changes
-      pending!
-    end
+    return unless unconfirmed_email_changed? && !unconfirmed_email.nil?
+    clear_changes_information
+    pending!
   end
 end
