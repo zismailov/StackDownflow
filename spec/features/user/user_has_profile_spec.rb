@@ -56,7 +56,7 @@ RSpec.feature "Registered User Has Profile", type: :feature do
 
     within(".user-all-questions") do
       expect(page).to have_content "11 Questions"
-      expect(page).to have_selector ".created-questions li", count: 11
+      expect(page).to have_selector ".created-questions tr", count: 11
     end
   end
 
@@ -71,7 +71,7 @@ RSpec.feature "Registered User Has Profile", type: :feature do
 
     within(".user-all-answers") do
       expect(page).to have_content "11 Answers"
-      expect(page).to have_selector ".created-answers li", count: 11
+      expect(page).to have_selector ".created-answers tr", count: 11
     end
   end
 
@@ -86,7 +86,7 @@ RSpec.feature "Registered User Has Profile", type: :feature do
 
     within(".user-all-comments") do
       expect(page).to have_content "11 Comments"
-      expect(page).to have_selector ".created-comments li", count: 11
+      expect(page).to have_selector ".created-comments tr", count: 11
     end
   end
 end
