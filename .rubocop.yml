@@ -21,6 +21,8 @@ Style/Lambda:
 
 Metrics/LineLength:
   Max: 120
+  Exclude:
+    - "**/*_spec.rb"
 
 Style/BlockDelimiters:
   Exclude:
@@ -57,3 +59,7 @@ Style/FileName:
 
 Lint/AmbiguousBlockAssociation:
   Enabled: false
+
+Style/ClassAndModuleChildren:
+  Exclude:
+    - app/**/*

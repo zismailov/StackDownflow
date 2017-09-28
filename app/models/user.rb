@@ -21,6 +21,11 @@
 class User < ApplicationRecord
   enum status: { guest: 0, without_email: 1, pending: 2, regular: 3, admin: 99 }
 
+  default_scope { by_reputation }
+  scope :by_reputation, -> { order("reputation DESC") }
+  scope :by_registration, -> { unscoped.order("created_at DESC") }
+  scope :alphabetically, -> { unscoped.order("username ASC") }
+
   has_many :questions
   has_many :answers
   has_many :comments

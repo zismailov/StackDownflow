@@ -2,7 +2,7 @@ class Ability
   include CanCan::Ability
 
   def initialize(user)
-    return guest_abilities if user.nil?
+    # return guest_abilities if user.nil?
 
     @user = user
 
