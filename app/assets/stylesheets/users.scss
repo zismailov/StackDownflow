@@ -1,3 +1,4 @@
+// USER PROFILE
 .pane {
   display: none;
 }
@@ -17,7 +18,6 @@
 .user-info form.change-avatar-form {
   display: none;
 }
-
 
 .user-all-questions .created-questions,
 .user-all-answers .created-answers,
@@ -39,4 +39,30 @@
 .user-summary .votes {
   width: 2em;
   display: inline-block;
+}
+
+// USERS PAGE
+.all-users {
+  line-height: 1;
+  overflow: hidden;
+  margin: 20px 0 0;
+}
+
+.all-users .user {
+  overflow: hidden;
+  float: left;
+  width: 25%;
+}
+
+.all-users .user-avatar {
+  float: left;
+  margin: 0 5px 0 0;
+}
+
+.all-users .user-info {
+  overflow: hidden;
+}
+
+.all-users .user strong {
+  line-height: 1.5;  
 }
