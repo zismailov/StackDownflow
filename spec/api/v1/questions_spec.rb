@@ -73,7 +73,7 @@ describe "Questions API" do
           expect(response.body).to have_json_size(2).at_path("1/answers")
         end
 
-        %w[body created edited files id best votes_sum].each do |attr|
+        %w[body created edited files id best? votes_sum].each do |attr|
           it "returns answer #{attr}" do
             if answer.respond_to?(attr.to_sym)
               expect(response.body).to be_json_eql(answer.send(attr.to_sym).to_json).at_path("1/answers/1/#{attr}")
