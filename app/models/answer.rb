@@ -30,7 +30,8 @@ class Answer < ApplicationRecord
   def mark_best!
     return if question.best_answer?
     update(best: true)
-    user.increment(:reputation, 15).save!
+    # user.increment(:reputation, 15).save!
+    Reputation.add_to(user, :answer_mark_best)
   end
 
   private

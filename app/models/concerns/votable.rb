@@ -4,16 +4,16 @@ module Votable
   included do
     has_many :votes, as: :votable, dependent: :destroy
   end
-
-  # rubocop:disable Metrics/AbcSize
   def vote_up(voter)
     return if voted_by? voter
     votes.create(user_id: voter.id, vote: 1)
 
     if self.class.name == "Question"
-      user.increment(:reputation, 5).save!
+      Reputation.add_to(user, :question_vote_up)
+      # user.increment(:reputation, 5).save!
     elsif self.class.name == "Answer"
-      user.increment(:reputation, 10).save!
+      Reputation.add_to(user, :answer_vote_up)
+      # user.increment(:reputation, 10).save!
     end
   end
 
