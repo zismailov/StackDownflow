@@ -38,7 +38,7 @@ describe "Questions API" do
         expect(response.body).to have_json_size(2)
       end
 
-      %w[body files has_best_answer id list_of_tags tags_array title votes_sum].each do |attr|
+      %w[body files best_answer id list_of_tags tags_array title votes_sum].each do |attr|
         it "returns question #{attr}" do
           if question.respond_to?(attr.to_sym)
             expect(response.body).to be_json_eql(question.send(attr.to_sym).to_json).at_path("1/#{attr}")
@@ -73,7 +73,7 @@ describe "Questions API" do
           expect(response.body).to have_json_size(2).at_path("1/answers")
         end
 
-        %w[body created edited files id is_best votes_sum].each do |attr|
+        %w[body created edited files id best votes_sum].each do |attr|
           it "returns answer #{attr}" do
             if answer.respond_to?(attr.to_sym)
               expect(response.body).to be_json_eql(answer.send(attr.to_sym).to_json).at_path("1/answers/1/#{attr}")
@@ -108,7 +108,7 @@ describe "Questions API" do
             expect(response.body).to have_json_path("1/answers/1/question")
           end
 
-          %w[id title body has_best_answer].each do |attr|
+          %w[id title body best_answer].each do |attr|
             it "returns answer question #{attr}" do
               if answer.question.respond_to?(attr.to_sym)
                 expect(response.body).to be_json_eql(answer.question.send(attr.to_sym).to_json).at_path("1/answers/1/question/#{attr}")
@@ -117,6 +117,67 @@ describe "Questions API" do
               end
             end
           end
+        end
+      end
+    end
+  end
+
+  describe "GET #show" do
+    let(:question) { create(:question) }
+
+    context "when access token is absent" do
+      it "returns 401 status code" do
+        get "/api/v1/questions/#{question.id}", as: :json
+        expect(response.status).to eq 401
+      end
+    end
+    context "when access token is invalid" do
+      it "returns 401 status code" do
+        get "/api/v1/questions/#{question.id}", params: { access_token: "12345" }, as: :json
+        expect(response.status).to eq 401
+      end
+    end
+
+    context "when user is authorized" do
+      let(:access_token) { create(:access_token) }
+      let!(:q_comments) { create_list(:question_comment, 2, commentable: question) }
+      let!(:q_comment) { q_comments.first }
+
+      before do
+        get "/api/v1/questions/#{question.id}", params: { access_token: access_token.token }, as: :json
+      end
+
+      it "returns 200 status code" do
+        expect(response).to be_success
+      end
+
+      %w[body files best_answer id list_of_tags tags_array title votes_sum].each do |attr|
+        it "returns question #{attr}" do
+          if question.respond_to?(attr.to_sym)
+            expect(response.body).to be_json_eql(question.send(attr.to_sym).to_json).at_path(attr)
+          else
+            expect(response.body).to have_json_path(attr)
+          end
+        end
+      end
+
+      describe "question comments" do
+        it "returns question comments list" do
+          expect(response.body).to have_json_size(2).at_path("comments")
+        end
+
+        %w[id body user author commentable_id created edited votes_sum].each do |attr|
+          it "returns question comment #{attr}" do
+            if q_comment.respond_to?(attr.to_sym)
+              expect(response.body).to be_json_eql(q_comment.send(attr.to_sym).to_json).at_path("comments/0/#{attr}")
+            else
+              expect(response.body).to have_json_path("comments/0/#{attr}")
+            end
+          end
+        end
+
+        it "returns question comment commentable" do
+          expect(response.body).to have_json_path("comments/0/commentable")
         end
       end
     end

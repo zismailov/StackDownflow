@@ -14,7 +14,7 @@
 class AnswerSerializer < ApplicationSerializer
   include ActionView::Helpers::DateHelper
 
-  attributes :id, :body, :created, :question, :edited, :files, :best?, :votes_sum
+  attributes :id, :body, :created, :question, :edited, :files, :best, :votes_sum
   has_one :user
   has_many :comments
 
@@ -31,7 +31,7 @@ class AnswerSerializer < ApplicationSerializer
     object.updated_at.to_s > object.created_at.to_s ? time_ago_in_words(object.updated_at) : false
   end
 
-  def best?
+  def best
     object.best?
   end
 end
