@@ -4,13 +4,13 @@ describe "Questions API" do
   describe "GET #index" do
     context "when access token is absent" do
       it "returns 401 status code" do
-        get "/api/v1/questions", format: :json
+        get "/api/v1/questions", as: :json
         expect(response.status).to eq 401
       end
     end
     context "when access token is invalid" do
       it "returns 401 status code" do
-        get "/api/v1/questions", format: :json, access_token: "12345"
+        get "/api/v1/questions", params: { access_token: "12345" }, as: :json
         expect(response.status).to eq 401
       end
     end
@@ -27,7 +27,7 @@ describe "Questions API" do
       let!(:a_comment) { a_comments.first }
 
       before do
-        get "/api/v1/questions", format: :json, access_token: access_token.token
+        get "/api/v1/questions", params: { access_token: access_token.token }, as: :json
       end
 
       it "returns 200 status code" do

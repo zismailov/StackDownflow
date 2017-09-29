@@ -4,13 +4,13 @@ describe "Profiles API" do
   describe "GET /me" do
     context "when access token is absent" do
       it "returns 401 status code" do
-        get "/api/v1/profiles/me", format: :json
+        get "/api/v1/profiles/me", as: :json
         expect(response.status).to eq 401
       end
     end
     context "when access token is invalid" do
       it "returns 401 status code" do
-        get "/api/v1/profiles/me", format: :json, access_token: "12345"
+        get "/api/v1/profiles/me", params: { access_token: "12345" }, as: :json
         expect(response.status).to eq 401
       end
     end
@@ -20,7 +20,7 @@ describe "Profiles API" do
       let(:access_token) { create(:access_token, resource_owner_id: user.id) }
 
       before do
-        get "/api/v1/profiles/me", format: :json, access_token: access_token.token
+        get "/api/v1/profiles/me", params: { access_token: access_token.token }, as: :json
       end
 
       it "returns 200 status code" do
