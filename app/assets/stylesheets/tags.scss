@@ -1,11 +1,18 @@
+// TAGS PAGE
 .tags {
   padding-top: 20px;
 }
 
-.tags .label {
-  display: block;
+.tags .tag {
+  width: 25%;
   float: left;
-  margin: 0 10px 10px 0;
-  font-weight: normal;
+  margin: 0 0 10px 0;
+}
+
+.tags .tag a {
   font-size: 1.2em;
+}
+
+.tags .tag a:hover {
+  text-decoration: none;
 }
