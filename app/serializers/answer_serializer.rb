@@ -14,7 +14,7 @@
 class AnswerSerializer < ApplicationSerializer
   include ActionView::Helpers::DateHelper
 
-  attributes :id, :body, :created, :question, :edited, :files, :best?, :votes_sum
+  attributes :id, :body, :created, :question, :edited, :files, :best?, :votes_sum, :author
   has_one :user
   has_many :comments
 
@@ -33,5 +33,9 @@ class AnswerSerializer < ApplicationSerializer
 
   def best?
     object.best?
+  end
+
+  def author
+    object.user.username
   end
 end
