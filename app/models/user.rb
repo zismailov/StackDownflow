@@ -62,9 +62,8 @@ class User < ApplicationRecord
     identity = Identity.find_by(provider: auth.provider, uid: auth.uid)
     return identity.user if identity
 
-    user = User.new(email: "#{username}@stackdownflow.dev",
-                    username: "#{auth.provider}_#{auth.uid}",
-                    password: Devise.friendly_token)
+    username = "#{auth.provider}_#{auth.uid}"
+    user = User.new(email: "#{username}@stackdownflow.dev", username: username, password: Devise.friendly_token)
     user.skip_confirmation!
     user.status = "without_email"
     user.save!
