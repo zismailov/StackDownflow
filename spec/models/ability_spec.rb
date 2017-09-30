@@ -13,6 +13,7 @@ end
 RSpec.shared_examples "without email abilities" do
   it { should be_able_to :update, user }
   it { should be_able_to :read, user }
+  it { should be_able_to :profile, user }
 
   it { should_not be_able_to :update, user2 }
 end
