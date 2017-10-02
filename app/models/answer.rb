@@ -14,7 +14,7 @@
 class Answer < ApplicationRecord
   include Votable
 
-  default_scope { order("best DESC, created_at DESC") }
+  default_scope { order("best DESC, votes_sum DESC, created_at ASC") }
 
   belongs_to :question, counter_cache: true
   belongs_to :user
@@ -30,7 +30,6 @@ class Answer < ApplicationRecord
   def mark_best!
     return if question.best_answer?
     update(best: true)
-    # user.increment(:reputation, 15).save!
     Reputation.add_to(user, :answer_mark_best)
   end
 

@@ -38,7 +38,7 @@ describe "Answers API" do
 
       has = %w[author body created edited files id best? votes_sum]
 
-      it_behaves_like "an API", has, nil, "1/", :answer
+      it_behaves_like "an API", has, nil, "0/", :answer
 
       describe "answer comments" do
         it "returns answers comments list" do
@@ -47,21 +47,21 @@ describe "Answers API" do
 
         has = %w[id body user author commentable_id created edited votes_sum]
 
-        it_behaves_like "an API", has, nil, "1/comments/0/", :a_comment
+        it_behaves_like "an API", has, nil, "0/comments/0/", :a_comment
 
         it "returns question comment commentable" do
-          expect(response.body).to have_json_path("1/comments/0/commentable")
+          expect(response.body).to have_json_path("0/comments/0/commentable")
         end
       end
 
       describe "answer question" do
         it "returns answer question" do
-          expect(response.body).to have_json_path("1/question")
+          expect(response.body).to have_json_path("0/question")
         end
 
         has = %w[id title body best_answer]
 
-        it_behaves_like "an API", has, nil, "1/question/", :question
+        it_behaves_like "an API", has, nil, "0/question/", :question
       end
     end
   end
