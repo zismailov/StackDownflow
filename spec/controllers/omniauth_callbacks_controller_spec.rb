@@ -9,6 +9,7 @@ RSpec.describe OmniauthCallbacksController, type: :controller do
     let(:get_facebook) { get :facebook }
 
     before do
+      request.env["devise.mapping"] = Devise.mappings[:user]
       request.env["omniauth.auth"] = OmniAuth.config.mock_auth[:facebook]
     end
 
