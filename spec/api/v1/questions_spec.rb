@@ -2,18 +2,7 @@ require "rails_helper"
 
 describe "Questions API" do
   describe "GET #index" do
-    context "when access token is absent" do
-      it "returns 401 status code" do
-        get "/api/v1/questions", as: :json
-        expect(response.status).to eq 401
-      end
-    end
-    context "when access token is invalid" do
-      it "returns 401 status code" do
-        get "/api/v1/questions", params: { access_token: "12345" }, as: :json
-        expect(response.status).to eq 401
-      end
-    end
+    it_behaves_like "an authenticatable API"
 
     context "when user is authorized" do
       let(:access_token) { create(:access_token) }
@@ -53,6 +42,10 @@ describe "Questions API" do
         end
       end
     end
+
+    def request_json(options = {})
+      get "/api/v1/questions", { as: :json }.merge(options)
+    end
   end
 
   describe "GET #show" do
@@ -64,18 +57,7 @@ describe "Questions API" do
     let!(:a_comments) { create_list(:answer_comment, 2, commentable: answer) }
     let!(:a_comment) { a_comments.first }
 
-    context "when access token is absent" do
-      it "returns 401 status code" do
-        get "/api/v1/questions/#{question.id}", as: :json
-        expect(response.status).to eq 401
-      end
-    end
-    context "when access token is invalid" do
-      it "returns 401 status code" do
-        get "/api/v1/questions/#{question.id}", params: { access_token: "12345" }, as: :json
-        expect(response.status).to eq 401
-      end
-    end
+    it_behaves_like "an authenticatable API"
 
     context "when user is authorized" do
       let(:access_token) { create(:access_token) }
@@ -140,42 +122,17 @@ describe "Questions API" do
         end
       end
     end
+
+    def request_json(options = {})
+      get "/api/v1/questions/#{question.id}", { as: :json }.merge(options)
+    end
   end
 
   describe "POST #create" do
     let(:question) { build(:question) }
     let(:attributes) { attributes_for(:question) }
 
-    context "when user is not authorized" do
-      context "when access token is absent" do
-        let(:post_create) do
-          post "/api/v1/questions", params: { question: attributes }, as: :json
-        end
-
-        it "returns 401 status code" do
-          post_create
-          expect(response.status).to eq 401
-        end
-
-        it "doesn't create a new question" do
-          expect { post_create }.not_to change(Question, :count)
-        end
-      end
-      context "when access token is invalid" do
-        let(:post_create) do
-          post "/api/v1/questions", params: { question: attributes, access_token: "12345" }, as: :json
-        end
-
-        it "returns 401 status code" do
-          post_create
-          expect(response.status).to eq 401
-        end
-
-        it "doesn't create a new question" do
-          expect { post_create }.not_to change(Question, :count)
-        end
-      end
-    end
+    it_behaves_like "an authenticatable API"
 
     context "when user is authorized" do
       let(:access_token) { create(:access_token) }
@@ -206,6 +163,10 @@ describe "Questions API" do
           expect(response.status).to eq 422
         end
       end
+    end
+
+    def request_json(options = {})
+      post "/api/v1/questions", { as: :json }.merge(options)
     end
   end
 end

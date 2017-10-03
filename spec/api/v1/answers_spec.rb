@@ -9,21 +9,9 @@ describe "Answers API" do
   let!(:a_comment) { a_comments.first }
 
   describe "GET #index" do
-    context "when access token is absent" do
-      it "returns 401 status code" do
-        get api_v1_question_answers_path(question), as: :json
-        expect(response.status).to eq 401
-      end
-    end
-
-    context "when access token is invalid" do
-      it "returns 401 status code" do
-        get api_v1_question_answers_path(question), params: { access_token: "12345" }, as: :json
-        expect(response.status).to eq 401
-      end
-    end
-
     context "when user is authorized" do
+      it_behaves_like "an authenticatable API"
+
       before do
         get api_v1_question_answers_path(question), params: { access_token: access_token.token }, as: :json
       end
@@ -42,7 +30,7 @@ describe "Answers API" do
 
       describe "answer comments" do
         it "returns answers comments list" do
-          expect(response.body).to have_json_size(2).at_path("1/comments")
+          expect(response.body).to have_json_size(2).at_path("0/comments")
         end
 
         has = %w[id body user author commentable_id created edited votes_sum]
@@ -64,25 +52,17 @@ describe "Answers API" do
         it_behaves_like "an API", has, nil, "0/question/", :question
       end
     end
+
+    def request_json(options = {})
+      get "/api/v1/questions/#{question.id}", { as: :json }.merge(options)
+    end
   end
 
   describe "GET #show" do
     let(:question) { create(:question) }
     let!(:answer) { create(:answer, question: question) }
 
-    context "when access token is absent" do
-      it "returns 401 status code" do
-        get api_v1_answer_path(answer), as: :json
-        expect(response.status).to eq 401
-      end
-    end
-
-    context "when access token is invalid" do
-      it "returns 401 status code" do
-        get api_v1_answer_path(answer), params: { access_token: "12345" }, as: :json
-        expect(response.status).to eq 401
-      end
-    end
+    it_behaves_like "an authenticatable API"
 
     context "when user is authorized" do
       let(:access_token) { create(:access_token) }
@@ -122,6 +102,10 @@ describe "Answers API" do
 
         it_behaves_like "an API", has, nil, "question/", :question
       end
+    end
+
+    def request_json(options = {})
+      get "/api/v1/answers/#{answer.id}", { as: :json }.merge(options)
     end
   end
 
