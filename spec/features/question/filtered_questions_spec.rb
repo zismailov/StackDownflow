@@ -10,7 +10,6 @@ RSpec.feature "Filtered Questions", type: :feature do
 
   background do
     sign_in user
-    # questions[0].vote_up(user)
   end
 
   scenario "User visits index page and sees questions with newest on top" do

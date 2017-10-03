@@ -36,7 +36,7 @@ RSpec.feature "User Edits His Profile", type: :feature do
     fill_in "Username", with: user.username.reverse
     click_button "Update User"
 
-    expect(page.current_path).to match %r{/\/users\/#{user.username.reverse}\z/}
+    expect(page.current_path).to match %r{\/users\/#{user.username.reverse}\z}
     expect(page).to have_content user.username.reverse
   end
 
@@ -46,7 +46,7 @@ RSpec.feature "User Edits His Profile", type: :feature do
     fill_in "Username", with: other_user.username
     click_button "Update User"
 
-    expect(page.current_path).to match %r{/\/users\/#{user.username}\z/}
+    expect(page.current_path).to match %r{\/users\/#{user.username}\z}
     expect(page).to have_content "Unable"
     expect(page).to have_content "has already been taken"
   end

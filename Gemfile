@@ -15,6 +15,7 @@ gem "bootstrap-sass"
 gem "coffee-rails", "~> 4.2"
 gem "jbuilder", "~> 2.5"
 gem "jquery-rails"
+gem "kaminari"
 gem "simple_form"
 gem "slim-rails"
 

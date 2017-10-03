@@ -90,7 +90,7 @@ RSpec.describe User, type: :model do
           expect(User.find_for_oauth(auth)).to be_a User
         end
         it "sets user's email" do
-          expect(User.find_for_oauth(auth).email).to eq "#{auth.provider}_#{auth.uid}@stackunderflow.dev"
+          expect(User.find_for_oauth(auth).email).to eq "#{auth.provider}_#{auth.uid}@stackdownflow.dev"
         end
         it "sets user's username" do
           expect(User.find_for_oauth(auth).username).to eq "#{auth.provider}_#{auth.uid}"

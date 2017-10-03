@@ -33,6 +33,7 @@ class User < ApplicationRecord
   has_many :attachments, dependent: :destroy
   has_many :identities, dependent: :destroy
   has_many :reputations, dependent: :destroy
+  paginates_per 30
 
   after_update :set_pending_status
   def after_confirmation

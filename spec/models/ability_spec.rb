@@ -6,6 +6,14 @@ RSpec.shared_examples "guest abilities" do
   it { should be_able_to :read, Comment }
   it { should be_able_to :read, User }
   it { should be_able_to :read, Tag }
+  it { should be_able_to :popular, Question }
+  it { should be_able_to :unanswered, Question }
+  it { should be_able_to :active, Question }
+  it { should be_able_to :tagged, Question }
+  it { should be_able_to :by_registration, User }
+  it { should be_able_to :alphabetically, User }
+  it { should be_able_to :popular, Tag }
+  it { should be_able_to :newest, Tag }
 
   it { should_not be_able_to :manage, :all }
 end

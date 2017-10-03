@@ -11,7 +11,7 @@ RSpec.feature "User Adds Other Accounts in Social Networks", type: :feature do
 
     expect(page).to have_link "my logins"
     click_link "my logins"
-    expect(page.current_path).to match %r{/\/users\/#{user.username}\/logins\z/}
+    expect(page.current_path).to match %r{\/users\/#{user.username}\/logins\z}
     expect(page).to have_link "Add Facebook account"
     expect(page).to have_link "Add Twitter account"
     expect(page).to have_link "Add Vkontakte account"
@@ -33,7 +33,7 @@ RSpec.feature "User Adds Other Accounts in Social Networks", type: :feature do
     visit logins_user_path(user)
 
     click_link "Add Facebook account"
-    expect(page.current_path).to match %r{/\/users\/#{user.username}\/logins\z/}
+    expect(page.current_path).to match %r{\/users\/#{user.username}\/logins\z}
     expect(page).to have_content "Facebook account already added"
   end
 end

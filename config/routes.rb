@@ -17,12 +17,20 @@ Rails.application.routes.draw do
                         concerns: [:commentable, :votable] do
       post "mark_best", on: :member
     end
+
+    collection do
+      get "popular(/page/:page)" => "questions#popular", as: :popular
+      get "unanswered(/page/:page)" => "questions#unanswered", as: :unanswered
+      get "active(/page/:page)" => "questions#active", as: :active
+      get "tagged/:tag(/page/:page)" => "questions#tagged", as: :tagged
+    end
   end
 
-  resources :tags, only: [:index] do
+  resources :tags, only: :index do
     collection do
-      get "/alphabetical", to: "tags#alphabetical", as: :alphabetical
-      get "/newest", to: "tags#newest", as: :newest
+      get "/(page/:page)", to: "tags#index"
+      get "/newest(/page/:page)", to: "tags#newest", as: :newest
+      get "/popular(/page/:page)", to: "tags#popular", as: :popular
     end
   end
 
@@ -30,6 +38,11 @@ Rails.application.routes.draw do
 
   resources :users, only: [:index, :show, :edit, :update], param: :username do
     get "/logins" => "users#logins", as: :logins, on: :member
+
+    collection do
+      get "/by_registration(/page/:page)", to: "users#by_registration", as: :by_registration
+      get "/alphabetically(/page/:page)", to: "users#alphabetically", as: :alphabetically
+    end
   end
 
   namespace :api do
