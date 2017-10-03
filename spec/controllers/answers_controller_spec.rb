@@ -49,6 +49,11 @@ RSpec.describe AnswersController, type: :controller do
           expect { post_create }.not_to change(user.answers, :count)
         end
 
+        it "doesn't update question's recent_activity field" do
+          sign_in user
+          expect { post_create }.not_to change { question.reload.recent_activity }
+        end
+
         it "returns 422 status code" do
           sign_in user
           post_create
@@ -59,6 +64,11 @@ RSpec.describe AnswersController, type: :controller do
 
     context "as a guest" do
       before { post_create }
+
+      it "doesn't create a new answer" do
+        expect { post_create }.not_to change(question.answers, :count)
+      end
+
       it "return 401 error" do
         expect(response.status).to eq 401
       end
@@ -106,6 +116,10 @@ RSpec.describe AnswersController, type: :controller do
 
         it "doesn't change answer's field" do
           expect(answer.body).not_to eq edited_answer.body
+        end
+
+        it "doesn't update question's recent_activity field" do
+          expect { post_create }.not_to change { question.reload.recent_activity }
         end
 
         it "returns 422 status" do
