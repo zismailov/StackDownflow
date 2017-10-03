@@ -14,7 +14,10 @@ class VotesController < ApplicationController
     publish_and_return_votes
   end
 
-  private if Rails.env.development?
+  private
+
+  # rubocop:disable LineLength
+  # rubocop:disable Metrics/AbcSize
   def publish_and_return_votes
     @parent.reload
     question_id = case @parent.class.name
@@ -24,9 +27,7 @@ class VotesController < ApplicationController
                   end
 
     unless Rails.env.production?
-      PrivatePub.publish_to "/questions/#{question_id}", vote: @parent.votes_sum,
-                                                         parent: @parent.class.name,
-                                                         parent_id: @parent.id
+      PrivatePub.publish_to "/questions/#{question_id}", vote: @parent.votes_sum, parent: @parent.class.name, parent_id: @parent.id
     end
     render json: { votes: @parent.votes_sum }, status: 200
   end
