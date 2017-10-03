@@ -47,7 +47,7 @@ RSpec.feature "User Edits His Profile", type: :feature do
     click_button "Update User"
 
     expect(page.current_path).to match %r{\/users\/#{user.username}\z}
-    expect(page).to have_content "Unable"
+    expect(page).to have_content "Failed"
     expect(page).to have_content "has already been taken"
   end
 

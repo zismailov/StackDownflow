@@ -3,7 +3,7 @@ class AnswersController < ApplicationController
   before_action :set_question, only: [:create]
   before_action :set_answer, except: :create
   before_action :add_user_id_to_attachments, only: [:create, :update]
-  after_action :publish, only: [:create, :destroy]
+  after_action :publish, only: [:create, :destroy], if: -> { Rails.env.development? }
 
   respond_to :json
 
