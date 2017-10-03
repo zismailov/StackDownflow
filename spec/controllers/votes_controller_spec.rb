@@ -33,6 +33,12 @@ RSpec.describe VotesController, type: :controller do
           expect(response.status).to eq 200
         end
 
+        it "publishes a message to PrivatePub" do
+          sign_in user
+          expect(PrivatePub).to receive(:publish_to)
+          patch_vote_up
+        end
+
         it "returns votes" do
           sign_in user
           patch_vote_up
@@ -87,6 +93,12 @@ RSpec.describe VotesController, type: :controller do
           sign_in user
           patch_vote_down
           expect(comment2.reload.votes_sum).to eq(-1)
+        end
+
+        it "publishes a message to PrivatePub" do
+          sign_in user
+          expect(PrivatePub).to receive(:publish_to)
+          patch_vote_down
         end
 
         it "returns status 200" do

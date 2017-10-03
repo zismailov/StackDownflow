@@ -25,6 +25,12 @@ RSpec.describe CommentsController, type: :controller do
           expect { post_create }.to change { question.reload.recent_activity }
         end
 
+        it "publishes a message to PrivatePub" do
+          sign_in user
+          expect(PrivatePub).to receive(:publish_to)
+          post_create
+        end
+
         it "returns 201 status" do
           sign_in user
           post_create
@@ -128,6 +134,11 @@ RSpec.describe CommentsController, type: :controller do
         before { sign_in user }
         it "removes the comment" do
           expect { delete_destroy }.to change(Comment, :count).by(-1)
+        end
+
+        it "publishes a message to PrivatePub" do
+          expect(PrivatePub).to receive(:publish_to)
+          delete_destroy
         end
 
         it "returns 204 status" do

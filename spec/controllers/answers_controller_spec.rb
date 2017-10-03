@@ -13,24 +13,26 @@ RSpec.describe AnswersController, type: :controller do
     end
 
     context "as an authenticated user" do
+      before { sign_in user }
       context "with valid data" do
         it "increases a total number of answer" do
-          sign_in user
           expect { post_create }.to change(question.answers, :count).by(1)
         end
 
         it "increases a total number of user's answer" do
-          sign_in user
           expect { post_create }.to change(user.answers, :count).by(1)
         end
 
         it "updates question's recent_activity field" do
-          sign_in user
           expect { post_create }.to change { question.reload.recent_activity }
         end
 
+        it "publishes a message to PrivatePub" do
+          expect(PrivatePub).to receive(:publish_to)
+          post_create
+        end
+
         it "returns 201 status code" do
-          sign_in user
           post_create
           expect(response.status).to eq 201
         end
@@ -40,22 +42,18 @@ RSpec.describe AnswersController, type: :controller do
         let(:attributes) { attributes_for :invalid_answer }
 
         it "doesn't increase a total number of answers" do
-          sign_in user
           expect { post_create }.not_to change(question.answers, :count)
         end
 
         it "doesn't increase a total number of user's answers" do
-          sign_in user
           expect { post_create }.not_to change(user.answers, :count)
         end
 
         it "doesn't update question's recent_activity field" do
-          sign_in user
           expect { post_create }.not_to change { question.reload.recent_activity }
         end
 
         it "returns 422 status code" do
-          sign_in user
           post_create
           expect(response.status).to eq 422
         end
@@ -89,19 +87,17 @@ RSpec.describe AnswersController, type: :controller do
 
     context "as an authenticated user" do
       context "with valid attributes" do
+        before { sign_in user }
         it "changes answer's field" do
-          sign_in user
           put_update
           expect(Answer.find(answer.id).body).to eq edited_answer.body
         end
 
         it "updates question's recent_activity field" do
-          sign_in user
           expect { put_update }.to change(question.reload, :recent_activity)
         end
 
         it "returns 200 status" do
-          sign_in user
           put_update
           expect(response.status).to eq 200
         end
@@ -167,24 +163,26 @@ RSpec.describe AnswersController, type: :controller do
     before { answer }
 
     context "as an authenticated user" do
+      before { sign_in user }
       context "when asnwer belongs to current user" do
         it "deletes the answer" do
-          sign_in user
           expect { delete_destroy }.to change(Answer, :count).by(-1)
         end
 
         it "deletes comments to the answer" do
-          sign_in user
           expect { delete_destroy }.to change(Comment, :count).by(-1)
         end
 
         it "removes relating votes" do
-          sign_in user
           expect { delete_destroy }.to change(Vote, :count).by(-1)
         end
 
+        it "publishes a message to PrivatePub" do
+          expect(PrivatePub).to receive(:publish_to)
+          delete_destroy
+        end
+
         it "returns 204 code" do
-          sign_in user
           delete_destroy
           expect(response.status).to eq 204
         end
@@ -194,12 +192,10 @@ RSpec.describe AnswersController, type: :controller do
         let(:answer) { create(:answer, question: question, user: user2) }
 
         it "doesn't delete the answer" do
-          sign_in user
           expect { delete_destroy }.not_to change(Answer, :count)
         end
 
         it "returns 401 status code" do
-          sign_in user
           delete_destroy
           expect(response.status).to eq 401
         end
