@@ -120,6 +120,11 @@ describe Ability do
 
     it { should be_able_to :mark_best, answer }
     it { should_not be_able_to :mark_best, answer2 }
+
+    it { should be_able_to :add_favorite, question }
+    it { should be_able_to :add_favorite, question2 }
+    it { should be_able_to :remove_favorite, question }
+    it { should be_able_to :remove_favorite, question2 }
   end
 
   describe "admin" do

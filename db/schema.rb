@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171004061159) do
+ActiveRecord::Schema.define(version: 20171004064723) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -52,6 +52,16 @@ ActiveRecord::Schema.define(version: 20171004061159) do
     t.index ["commentable_id", "commentable_type"], name: "index_comments_on_commentable_id_and_commentable_type"
     t.index ["user_id"], name: "index_comments_on_user_id"
     t.index ["votes_sum"], name: "index_comments_on_votes_sum"
+  end
+
+  create_table "favorite_questions", force: :cascade do |t|
+    t.integer "question_id"
+    t.integer "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["question_id", "user_id"], name: "index_favorite_questions_on_question_id_and_user_id", unique: true
+    t.index ["question_id"], name: "index_favorite_questions_on_question_id"
+    t.index ["user_id"], name: "index_favorite_questions_on_user_id"
   end
 
   create_table "identities", force: :cascade do |t|
