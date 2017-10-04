@@ -35,6 +35,12 @@ class Answer < ApplicationRecord
     Reputation.add_to(user, :answer_mark_best)
   end
 
+  def notify_subscribers
+    question&.favorites&.find_each do |fuser|
+      AnswerMailer.new_for_subscribers(fuser, question).deliver
+    end
+  end
+
   private
 
   def update_question_activity
@@ -47,16 +53,5 @@ class Answer < ApplicationRecord
 
   def send_notification
     delay.notify_subscribers
-    delay.notify_question_author
-  end
-
-  def notify_subscribers
-    question.favorites.find_each do |user|
-      AnswerMailer.new_for_subscribers(user, question).deliver
-    end
-  end
-
-  def notify_question_author
-    AnswerMailer.new_for_question_author(question.user, question).deliver
   end
 end
