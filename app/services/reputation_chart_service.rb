@@ -2,11 +2,10 @@ class ReputationChartService
   def initialize(user, days)
     @user = user
     @period = days
-    map_to_period(prepare_array(reputations))
   end
 
   def chart
-    @reputations if @reputations
+    @reputations ||= map_to_period(prepare_array(reputations))
   end
 
   private
@@ -26,7 +25,7 @@ class ReputationChartService
 
   def map_to_period(array)
     return if array.blank?
-    @reputations = ((@period - 1).days.ago.to_date..Date.today).map do |date|
+    ((@period - 1).days.ago.to_date..Date.today).map do |date|
       reputation = array.select { |r| r[:date] == date }
       reputation[0] ? reputation[0] : { date: date, reputation: 0, percentage: 0 }
     end
