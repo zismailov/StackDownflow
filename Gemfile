@@ -39,6 +39,8 @@ gem "omniauth-twitter"
 gem "omniauth-vkontakte"
 gem "private_pub"
 gem "responders"
+gem "sidetiq"
+gem "sinatra", require: false
 gem "thin"
 
 group :test do

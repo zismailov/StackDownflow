@@ -27,6 +27,7 @@ class Answer < ApplicationRecord
   validates :body, presence: true, length: { in: 10..5000 }
 
   after_save :update_question_activity
+  after_create :send_notification
 
   def mark_best!
     return if question.best_answer?
@@ -42,5 +43,20 @@ class Answer < ApplicationRecord
 
   def no_attachment(attrs)
     attrs["file"].blank? && attrs["file_cache"].blank?
+  end
+
+  def send_notification
+    delay.notify_subscribers
+    delay.notify_question_author
+  end
+
+  def notify_subscribers
+    question.favorites.find_each do |user|
+      AnswerMailer.new_for_subscribers(user, question).deliver
+    end
+  end
+
+  def notify_question_author
+    AnswerMailer.new_for_question_author(question.user, question).deliver
   end
 end

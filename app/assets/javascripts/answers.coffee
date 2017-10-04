@@ -34,7 +34,7 @@ class @Answer
       $(".edit-form").prev().show().end().remove()
       that.$backupBody = that.$body.clone()
       that.$body.hide()
-      that.$body.after(HandlebarsTemplates["edit_answer"]({id: that.id, body: that.$body.text(), question_id: Underflow.question.id}))
+      that.$body.after(HandlebarsTemplates["edit_answer"]({id: that.id, body: that.$body.text(), question_id: Downflow.question.id}))
 
     this.$el.on "click", ".cancel-editing", (e) ->
       e.preventDefault()

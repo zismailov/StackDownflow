@@ -28,6 +28,7 @@
 /public/uploads
 
 /coverage
+dump.rdb
 
 /.env
 /.env.production
