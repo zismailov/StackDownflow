@@ -20,7 +20,7 @@ RSpec.feature "Attach File to Answer", type: :feature do
 
     expect(page).to have_content answer.body
     expect(page).to have_content answer.user.username
-    expect(page).to have_link "cover_image.png"
+    expect(page).to have_selector "a[href$='cover_image.png']"
   end
 
   scenario "User uploads multiple files", js: true do
@@ -34,8 +34,8 @@ RSpec.feature "Attach File to Answer", type: :feature do
 
     expect(page).to have_content answer.body
     expect(page).to have_content answer.user.username
-    expect(page).to have_link "cover_image.png"
-    expect(page).to have_link "Gemfile"
+    expect(page).to have_selector "a[href$='cover_image.png']"
+    expect(page).to have_selector "a[href$='Gemfile']"
   end
 
   scenario "User deletes attached file", js: true do
@@ -46,7 +46,7 @@ RSpec.feature "Attach File to Answer", type: :feature do
     within(".answer .answer-attachments") do
       find(".delete-attachment").click
     end
-    expect(page).not_to have_link "cover_image.png"
+    expect(page).not_to have_selector "a[href$='cover_image.png']"
   end
 
   scenario "User attaches a file while editing a question", js: true do
@@ -58,7 +58,7 @@ RSpec.feature "Attach File to Answer", type: :feature do
       all("input[type='file']")[0].set("#{Rails.root}/spec/fixtures/cover_image.png")
       click_button "Update Answer"
 
-      expect(page).to have_content "cover_image.png"
+      expect(page).to have_selector "a[href$='cover_image.png']"
     end
   end
 
@@ -70,6 +70,6 @@ RSpec.feature "Attach File to Answer", type: :feature do
     expect(current_path).to match %r{\/questions\/\d\z}
 
     expect(page).to have_content "You are not allowed to upload \"rb\" files"
-    expect(page).not_to have_link "routes.rb"
+    expect(page).not_to have_selector "a[href$='routes.rb']"
   end
 end

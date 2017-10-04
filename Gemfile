@@ -29,6 +29,7 @@ gem "remotipart"
 gem "cancancan"
 gem "cocoon"
 gem "doorkeeper"
+gem "faker"
 gem "has_scope"
 gem "mailcatcher"
 gem "omniauth"
@@ -44,7 +45,7 @@ group :test do
   gem "capybara"
   gem "codeclimate-test-reporter", require: nil
   gem "database_cleaner"
-  gem "faker"
+
   gem "json_spec"
   gem "poltergeist"
   gem "shoulda-matchers"

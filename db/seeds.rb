@@ -1,10 +1,6 @@
-# This file should contain all the record creation needed to seed the database with its default values.
-# The data can then be loaded with the rails db:seed command (or created alongside the database with db:setup).
-#
-# Examples:
-#
-#   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
-#   Character.create(name: 'Luke', movie: movies.first)
+require 'database_cleaner'
+
+DatabaseCleaner.clean_with(:truncation)
 
 100.times do
   user = {}
@@ -52,7 +48,7 @@ end
 question_count = Question.count
 30.times do
   question = Question.where(id: rand(question_count)+1).first
-  unless question.has_best_answer?
+  unless question.best_answer?
     answers = question.answers
     answer = answers.where(id: question.answer_ids.sample).first
     unless answer.best?
