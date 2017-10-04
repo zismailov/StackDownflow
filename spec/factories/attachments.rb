@@ -12,7 +12,7 @@
 
 FactoryGirl.define do
   factory :attachment do
-    file "image.png"
+    file { File.new("#{Rails.root}/spec/fixtures/cover_image.png") }
     association :attachable
   end
 end

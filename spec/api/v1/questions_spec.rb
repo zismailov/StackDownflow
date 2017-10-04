@@ -10,6 +10,10 @@ describe "Questions API" do
       let!(:question) { questions.first }
       let!(:q_comments) { create_list(:question_comment, 2, commentable: question) }
       let!(:q_comment) { q_comments.first }
+      let!(:q_attachments) { create_list(:attachment, 2, attachable: question) }
+      let!(:q_attachment) { q_attachments.first }
+      let!(:q_a_attachments) { create_list(:attachment, 2, attachable: answer) }
+      let!(:q_a_attachment) { q_a_attachments.first }
 
       before do
         get "/api/v1/questions", params: { access_token: access_token.token }, as: :json
@@ -88,6 +92,16 @@ describe "Questions API" do
         end
       end
 
+      describe "question files" do
+        it "returns question files list" do
+          expect(response.body).to have_json_size(2).at_path("files")
+        end
+
+        has = %w[id path filename]
+
+        it_behaves_like "an API", has, nil, "files/1/", :q_attachment
+      end
+
       describe "question answers" do
         it "returns answers list" do
           expect(response.body).to have_json_size(2).at_path("answers")
@@ -109,6 +123,16 @@ describe "Questions API" do
           it "returns question comment commentable" do
             expect(response.body).to have_json_path("answers/0/comments/0/commentable")
           end
+        end
+
+        describe "question answer files" do
+          it "returns question files list" do
+            expect(response.body).to have_json_size(2).at_path("answers/0/files")
+          end
+
+          has = %w[id path filename]
+
+          it_behaves_like "an API", has, nil, "answers/0/files/1/", :q_a_attachment
         end
 
         describe "question answer question" do
