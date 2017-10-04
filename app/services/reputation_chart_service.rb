@@ -25,7 +25,7 @@ class ReputationChartService
 
   def map_to_period(array)
     return if array.blank?
-    ((@period - 1).days.ago.to_date..Date.today).map do |date|
+    ((@period - 1).days.ago.to_date..Date.current).map do |date|
       reputation = array.select { |r| r[:date] == date }
       reputation[0] ? reputation[0] : { date: date, reputation: 0, percentage: 0 }
     end
