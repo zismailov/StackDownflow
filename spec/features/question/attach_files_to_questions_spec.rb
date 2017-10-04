@@ -95,4 +95,17 @@ RSpec.feature "Attach File to Question", type: :feature do
       expect(page).to have_content "cover_image.png"
     end
   end
+
+  scenario "User can't uplaod anything but images" do
+    fill_in "Title", with: question.title
+    fill_in "Body", with: question.body
+    fill_in "Tags", with: tags.map(&:name).join(",")
+    all(".new_question input[type='file']")[0].set("#{Rails.root}/config/routes.rb")
+    click_on "Create Question"
+
+    expect(current_path).to match %r{\/questions\z}
+
+    expect(page).to have_content "You are not allowed to upload \"rb\" files "
+    expect(page).not_to have_link "routes.rb"
+  end
 end

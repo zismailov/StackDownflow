@@ -88,6 +88,8 @@ class @Answer
     this.clearFormErrors(form)
     $form.prepend("<div class='alert alert-danger'>Please review the problems below:</div>")
     for field, error of response
+      if field == 'attachments.file'
+        $form.prepend("<div class='alert alert-danger'>#{error}</div>")
       field = $form.find(".form-control#answer_#{field}")
       formGroup = field.parents(".form-group").addClass("has-error")
       formGroup.append("<span class='help-block error'>#{error[0]}</a>")
@@ -105,7 +107,7 @@ class @Answer
     this.$commentForm.slideToggle()
 
   addComment: (comment) ->
-    console.log comment
+    #console.log comment
     current_user = $("#current_user").data("current-user")
     unless this.commentById(comment.id)
       if (this.$comments.length == 0 || this.$comments.find(".comment").length == 0)
