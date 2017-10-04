@@ -39,7 +39,7 @@ gem "omniauth-twitter"
 gem "omniauth-vkontakte"
 gem "private_pub"
 gem "responders"
-gem "sidetiq"
+gem "sidekiq"
 gem "sinatra", require: false
 gem "thin"
 
