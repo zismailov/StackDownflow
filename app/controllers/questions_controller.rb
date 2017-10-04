@@ -2,6 +2,7 @@ class QuestionsController < ApplicationController
   before_action :authenticate_user!, only: [:create, :new, :update, :destroy]
   before_action :set_question, only: [:show, :edit, :update, :destroy]
   before_action :add_user_id_to_attachments, only: [:create, :update]
+  after_action :updated_edited, only: :update
 
   respond_to :html, except: [:update]
   respond_to :json, only: [:update]
@@ -65,5 +66,9 @@ class QuestionsController < ApplicationController
 
   def set_question
     @question = Question.find(params[:id])
+  end
+
+  def updated_edited
+    @question.update(edited_at: Time.zone.now) unless @question.errors.any?
   end
 end
