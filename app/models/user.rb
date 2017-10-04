@@ -47,7 +47,7 @@ class User < ApplicationRecord
   enum status: { guest: 0, without_email: 1, pending: 2, regular: 3, admin: 99 }
 
   mount_uploader :avatar, AvatarUploader
-  paginates_per 30
+  paginates_per 28
 
   devise :database_authenticatable, :registerable, :confirmable,
          :recoverable, :rememberable, :validatable,
