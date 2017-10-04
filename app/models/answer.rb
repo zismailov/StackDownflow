@@ -18,14 +18,15 @@ class Answer < ApplicationRecord
 
   belongs_to :question, counter_cache: true
   belongs_to :user
+
   has_many :comments, as: :commentable, dependent: :destroy
   has_many :attachments, as: :attachable, dependent: :destroy
-  accepts_nested_attributes_for :attachments, reject_if:
-                                              proc { |attrs| attrs["file"].blank? && attrs["file_cache"].blank? }
 
-  after_save :update_question_activity
+  accepts_nested_attributes_for :attachments, reject_if: :no_attachment
 
   validates :body, presence: true, length: { in: 10..5000 }
+
+  after_save :update_question_activity
 
   def mark_best!
     return if question.best_answer?
@@ -37,5 +38,9 @@ class Answer < ApplicationRecord
 
   def update_question_activity
     question.save
+  end
+
+  def no_attachment(attrs)
+    attrs["file"].blank? && attrs["file_cache"].blank?
   end
 end
